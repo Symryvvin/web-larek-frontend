@@ -29,8 +29,8 @@ interface ICatalogModel {
 }
 
 interface ICartModel {
-	items: ProductId[];
-	addItemById: (id: ProductId) => void;
+	items: Product[];
+	addItem: (item: Product) => void;
 	deleteItemById: (id: ProductId) => void;
 	placeOrder: () => void;
 }
