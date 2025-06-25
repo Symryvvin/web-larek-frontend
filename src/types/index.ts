@@ -66,6 +66,7 @@ interface IForm extends IView {
 	submitButton: HTMLButtonElement;
 	onSubmit: () => void;
 	validate: () => void;
+	getFormData: () => object;
 }
 
 interface IModal {
