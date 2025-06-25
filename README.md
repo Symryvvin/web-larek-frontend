@@ -43,119 +43,175 @@ yarn build
 
 # Архитектура
 
-В приложении используется архитектурный подход **MVP**. Взаимодействия между компонентами происходит посредством применения шаблона `EventEmitter`.
+В приложении используется архитектурный подход **MVP**. 
+
+## Об архитектуре
+
+Взаимодействия внутри приложения происходят через события, посредством применения шаблона `EventEmitter`. События инициализируются моделями и представлениями, слушателями событий являются классы Presenters. Это посредники между моделью и представлением, в которых выполняется основная бизнес-логика приложения (изменение модели и отрисовка элементов html-страницы).
+
+## UML-диаграмма архитектуры
+
+![](architecture/architecture.png)
 
 ## Базовый код
 
-- `IEvents` - интерфейс для работы с событиями.
-- `EventEmitter` - классический брокер событий, реализующий паттерн EventEmitter.
-- `Api` - класс для работы с API сервера.
+`IEvents` - интерфейс для работы с событиями, обладающий тремя основными методами: `on` - для подписки на событие, `emit` - для инициации события и `trigger` - для создания callback триггера, события с заданными
+аргументами. Это позволяет передавать его в качестве обработчика события в другие классы. Эти
+классы будут генерировать события, не будучи при этом напрямую зависимыми от класса `EventEmitter`.
+
+`EventEmitter` - классический брокер событий, реализующий паттерн **EventEmitter** (Наблюдатель). Позволяет подписываться на события и уведомлять подписчиков. Дополнительно реализованы методы `off` - для отписки от события, `onAll` - для подписки на все события и `offAll` - для сброса всех подписок.
+
+`Api` - класс для работы с backend API. 
+* `constructor(baseUrl: string, options: RequestInit = {})`- в конструкторе класса передается базовый url ресурса и дополнительный опции для всех запросов.
+* `get(uri: string)` - выполнение запроса с методом GET для получения данных по запросу.
+* `post(uri: string, data: object, method: ApiPostMethods = 'POST')` - выполнение запроса с методом POST для передачи данных на backend.
 
 ## Компоненты модели данных
 
-`Product` - обладающий уникальным идентификатором `ProductId` набор данных определяющий товар. В общем виде товар определяется несколькими полями: идентификатор, наименование, описание, категория, изображение, цена.
+`Product` - обладающий уникальным идентификатором `ProductId` набор данных определяющий товар. В общем виде товар определяется несколькими полями:
+* `ProductId` - идентификатор, простой тип на основе `string`.
+* `title: string` - наименование.
+* `description: string` - описание.
+* `category: string` - категория.
+* `image: string` - изображение.
+* `price: number` - цена.
 
-`Order` - заказ, который оформляет пользователь вводя необходимые данные через форму: тип платежа, включает в себя адрес доставки, email и номер телефона. Заказ так же включает в себя список идентификаторов товаров и общую стоимость заказа. Данные в виде json будут отправляться на сервер.
+`Order` - заказ, который оформляет пользователь по списку товаров в корзине:
+* `items: ProductId[]` - массив идентификаторов товаров из корзины.
+* `total: number` - общая стоимость товаров в заказе.
+Через форму дополняется необходимыми данными:
+* `payment: PaymentMethod` - тип платежа, простой тип на основе строк перечисления `'online'`, '`'on_delivery'`
+* `address: string` - адрес доставки.
+* `email: Email` - email пользователя
+* `phone: Phone` - номер телефона пользователя
 
 ---
-`ICatalogModel` - интерфейс для модели каталога товаров. Модель содержит коллекцию товаров `Product`. С каталогом товаром можно осуществить следующие действия:
-* заполнить каталог списком товаров.
-* получить товар по идентификатору.
+`ICatalogModel` - интерфейс для модели каталога товаров, для хранения и работы с коллекцией товаров `items: Product[]`. С каталогом товаром можно осуществить следующие действия:
+* `addItems(items: Product[]): void` - заполнить каталог списком товаров.
+* `getItemById(id: ProductId): Product` - получить товар по идентификатору.
 
-`ICartModel` - интерфейс для модели корзины. Корзина содержит коллекцию товаров `Product`. С корзиной можно осуществить следующие действия:
-* отобразить список товаров.
-* добавить товар в корзину.
-* удалить товар из корзины по идентификатору.
-* оформить заказ товаров в корзине.
+`ICartModel` - интерфейс для модели корзины, для хранения и работы с коллекцией товаров `items: Product[]`. С корзиной можно осуществить следующие действия:
+* `getItems(): Prodcut[]` - получить список товаров.
+* `addItem(item: Product): void` - добавить товар в корзину.
+* `removeItemById(id: ProductId): void` - удалить товар из корзины по идентификатору.
+* `clear(): void` - очистить корзину.
 
 ## Компоненты представления
 
-* `IMainPage` - интерфейс компонента главной страницы приложения. Главная страница включает в себя отображение галереи каталога товаров, после загрузки данных с сервера и счетчик добавленных в корзину товаров.
-* `ICatalog` - галерея каталога товаров, содержит коллекцию HTML элементов карточек товаров.
-* `ICart` - содержимое корзины, содержит коллекцию HTML элементов карточек товаров, а так же полную стоимость всех товаров в корзине.
-* `IView` - универсальный интерфейс представления, обладающий единственным методом отображения содержимого.
-* `IViewConstructor` - универсальный интерфейс конструктора представления. Предназначен для возможности создания представления `IView` через конструктор new с передачей в него шаблона элемента. Все представления которые необходимо создавать из заготовленного шаблона будут наследовать его.
-* `ICard` - интерфейс для представления карточки товара, наследуется от универсального интерфейса представления.
+### Базовые `IView` и `IViewConstructor`
+
+Для удобства все компоненты представления, которые должны отрисовать элемент или элементы будут наследовать интерфейс `IView`. Универсальный интерфейс представления, обладающий единственным методом отображения содержимого:
+* `render: (data?: object) => HTMLElement` - метод отрисовки, возвращающий готовый html-элемент.
+
+Если элемент создается из html-шаблона, то он должен так же наследовать интерфейс `IViewConstructor<T extends IView>`. Универсальный интерфейс конструктора представления:
+* `new(template: HTMLTemplateElement): T` - создание нового экземпляра `IView` из html-шаблона.
+
+---
+
+### Основные
+
+`IMainPageView` - интерфейс компонента представления главной страницы приложения, расширяет `IView`. Главная страница включает в себя:
+* `catalog: HTMLElement` - элемент каталога/галереи товаров. Селектор класса`'.gallery'`.
+* `cartItemsCount: HTMLElement` - элемент счетчика добавленных в корзину товаров. Селектор класса`'.header__basket-counter'`.
+
+`ICatalogView` - галерея каталога товаров, расширяет `IView` и содержит:
+* `cards: HTMLElement[]` - коллекцию HTML элементов карточек товаров.
+
+`ICartView` - содержимое корзины, расширяет `IViewConstructor`, создается по шаблону c id `'#basket'` и содержит:
+* `cards: HTMLElement[]` - коллекцию HTML элементов карточек товаров.
+* `totalPriceLabel: HTMLElement` - элемент по селектору `'.basket__price'`, содержащий информацию о полной стоимости товаров в корзине.
+
+---
+
+### Карточки товаров
+
+`ICardView` - интерфейс для представления карточки товара, наследуется от `IView`. Основные поля:
+* `readonly id: ProductId` - идентификатор товара для быстрого доступа к нему только для чтения, передается в конструкторе класса при реализации интерфейса.
+* `title: HTMLElement` - элемент блока текста по селектору `'.card__title'`.
 
 В приложении существуют различные шаблоны отображения карточек. Для отображения каждой существует отдельный класс реализующий интерфейс `ICardView` с необходимым набором HTML элементов для каждого случая:
-```typescript
-class CardInCatalog implements ICard {
-	protected _id: ProductId;
-	protected title: HTMLElement;
-	protected description: HTMLElement;
-	protected category: HTMLElement;
-	protected price: HTMLElement;
-}
+`CardInCatalog` - класс карточки товара в галереи каталога, реализует `ICardView`, создается по шаблону `'#card-catalog'`:
+* `image: HTMLElement` - изображение `'.card__image'`.
+* `category: HTMLElement` - блок текста `'.card__category'`.
+* `price: HTMLElement` - блок текста `'.card__price'`.
 
-class CardPreview extends CardCatalog {
-	protected image: HTMLElement;
-}
+CardPreview - класс карточки товара для отображения полного описания товара, реализует `ICardView`, создается по шаблону `'#card-preview'`:
+* `image: HTMLElement` - изображение `'.card__image'`.
+* `category: HTMLElement` - блок текста `'.card__category'`.
+* `price: HTMLElement` - блок текста `'.card__price'`.
+* `description: HTMLElement` - блок текста `'.card__text'`.
 
-class CardInCart implements ICard {
-	protected _title: HTMLElement;
-}
-```
+CardInCart - класс карточки товара для отображения полного описания товара, реализует `ICardView`, создается по шаблону `'#card-basket'`. Новыми полями не обладает.
 
-* `IForm` - универсальный интерфейс для форм, расширяет интерфейс `IView` методами отправки и валидации.
-* `OrderForm` - форма оформления заказа. Класс, которые реализует интерфейс представления `IForm`. Форма создается из html-шаблона.
-* `ContactsForm` - форма заполнения контактных данных пользователя. Класс, который реализует интерфейс `IForm`.
-* `OrderSuccess` - представление успешного оформления заказа.
+---
+### Формы
 
-В приложении присутствуют две формы для оформления заказа:
-```typescript
-class OrderForm implements IForm {
-	protected paymentMethodButtons: HTMLButtonElement[];
-	protected addressInput: HTMLInputElement;
-	protected submitButton: HTMLButtonElement;
-}
+`IForm` - универсальный интерфейс для форм, расширяет интерфейс `IView` методами отправки и валидации:
+* `submitButton: HTMLButtonElement` - кнопка отправки формы.
+* `onSubmit: () => void` - отправка формы.
+* `validate: () => void` - валидация формы.
 
-class ContactsForm implements IForm {
-	protected emailInput: HTMLInputElement;
-	protected phoneInput: HTMLInputElement;
-	protected submitButton: HTMLButtonElement;
-}
-```
+`OrderForm` - форма оформления заказа. Класс, которые реализует интерфейс представления `IForm`. Форма создается из html-шаблона по id `'#order'`. Компоненты формы:
+* `paymentButton: HTMLButtonElement[]` - кнопки выбора формы оплаты `'.card'`, `'.cash'`.
+* `addressInput: HTMLInputElement` - поле ввода адреса `'.address'`.
 
-* `IModal` - интерфейс модального окна, в которое можно передать любой `HTMLElement` в виде контента. Обладает методами открытия и закрытия, а так же методом для изменения основного контента окна.
+`ContactsForm` - форма заполнения контактных данных пользователя. Класс, который реализует интерфейс `IForm`.  Форма создается из html-шаблона по id `'#contacts'`. Компоненты формы:
+* `emailInput: HTMLInputElement` - поле ввода e-mail `'.email'`.
+* `phoneInput: HTMLInputElement` - поле ввода телефона `'.phone'`.
+
+`OrderSuccess` - представление успешного оформления заказа, расширяет интерфейс `IForm` с единственным полем:
+* `description: HTMLElement` - блок текста `'.order-success__description'`.
+
+---
+
+### Модальное окно
+
+`IModal` - интерфейс модального окна, которое создается блоком `'#modal-container'`. Расширяет интерфейс `IView`.
+* `content: HTMLElement` - контент модального окна.
+
+Обладает методами открытия `open: () => void` и закрытия `close: () => void`, а так же методом для изменения основного контента окна `setContent: (content: HTMLElement) => void`.
 
 ## Presenters
 
-* `ApplicationPresenter` - основное presenter  приложения
-* `CartPresenter` - presenter для работы с корзиной.
-* `CatalogPresenter` - presenter для работы с каталогом товаров.
+Создание всех presenter происходит в файле `src/index.ts` после получения всех необходимых шаблонов и элементов страницы и создания экземпляров моделей.
 
-```typescript
-class ApplicationPresenter {
-	protected mainPageContainer: IMainPage;
-	protected modalContainer: IModal;
-	protected orderForm: IForm;
-	protected contactsForm: IFrom;
-	protected orderSuccessContainer: IView;
+`IPresenter` - интерфейс presenter. Предоставляет возможность реализовать любой presenter, который будет включать в себя api, events и базовые методы отрисовки и инициализации:
+* `api: Api` - Api для работы с backend.
+* `events: EventEmitter` - брокер событий
+* `init(): void` - инициализация компонентов, событий и других presenters.
+* `renderView(): void` - отрисовывает представления с которыми работает
 
-	protected cartPresenter: CartPresenter;
-	protected catalogPresenter: CatalogPresenter;
-	
-	renderView(): void {}
-	openModal(content: IView): void {}
-}
+`ApplicationPresenter` - класс, основной presenter приложения. Реализует основную бизнес-логику приложения, подписывается на события, которые генерируют компоненты представления и модели. Обрабатывает события, изменяя модель и отрисовывает представления. Открывает модальное окно с переданным готовым html контентом.
+Конструктор класса:
+* `constructor(api: Api, events: EventEmitter, mainPageContainer: IMainPageView, modal: IModal, orderForm: IForm, contactsForm: IFrom, orderSuccessContainer: IFrom, cartPresenter: CartPresenter, catalogPresenter: CatalogPresenter)` - конструктор куда передаются все необходимые компоненты.
+Поля класса:
+* `mainPageContainer: IMainPageView` - представление главной страницы.
+* `modal: IModal` - экземпляр модального окна.
+* `orderForm: IForm` - форма оформления заказа.
+* `contactsForm: IFrom` - форма заполнения контактных данных.
+* `orderSuccessForm: IFrom` - форма сообщения об успешно оформленном заказе.
+* `cartPresenter: CartPresenter` - presenter корзина.
+* `catalogPresenter: CatalogPresenter` - presenter каталога.
+Методы класса:
+* `openModal(content: IView): void` - открывает модальное окно с готовым контентом.
 
-class CartPresenter {
-	protected cartModel: ICartModel;
-	protected cartContainer: ICart;
-	protected cardInCart: IView;
+`CartPresenter` - класс, presenter для работы с корзиной. Реализует бизнес-логику работы с моделью и представлением корзины товаров. Обрабатывает события связанные с корзиной. Создает и оформляет заказ. Отрисовывает html контент корзины.
+Конструктор класса:
+* `constructor(api: Api, events: EventEmitter, cartModel: ICartModel, cartContainer: ICartView, cardInCard: IView)` - конструктор куда передаются все необходимые компоненты.
+Поля класса:
+* `cartModel: ICartModel` - модель корзины.
+* `cartContainer: ICartView` - html контейнер корзины.
+* `cardInCart: IView` - представление карточки товара в корзине.
 
-	renderView(): void {}
-}
+`CatalogPresenter` - класс, presenter для работы с каталогом. Реализует бизнес-логику работы с моделью и представлением каталога. Обрабатывает события связанные с корзиной. Отрисовывает галерею каталога товаров.
+Конструктор класса:
+* `constructor(api: Api, events: EventEmitter, catalogModel: ICatalogModel, catalogContainer: ICatalogView, cardInCatalog: IView, cardPreview: IView)` - конструктор куда передаются все необходимые компоненты.
+Поля класса:
+* `catalogModel: ICatalogModel` - модель каталога.
+* `catalogContainer: ICatalogView` - html контейнер каталога.
+* `cardInCatalog: IView` - представление карточки товара в каталоге.
+* `cardPreview: IView` - представление карточки товара в отдельном окне.
 
-class CatalogPresenter {
-	protected catalogModel: ICatalogModel;
-	protected catalogContainer: ICatalog;
-	protected cardInCatalog: IView;
-	protected cardPreview: IView;
-
-	renderView(): void {}
-}
-```
 ## Пользовательские сценарии
 
 Описание пользовательских сценариев и событий для работы `EventEmitter`.
@@ -224,8 +280,3 @@ class CatalogPresenter {
 * **'order:formed'** - заказ сформирован.
 * **'order:payment_selected'** - выбран способ оплаты заказа.
 * **'order:placed'** - заказ оформлен.
-
-## UML-диаграмма модели и представлений
-
-![](architecture/model.png)
-![](architecture/view.png)

@@ -1,3 +1,6 @@
+import { EventEmitter } from '../components/base/events';
+import { Api } from '../components/base/api';
+
 type ProductId = string;
 
 type Product = {
@@ -14,12 +17,12 @@ type Email = string;
 type Phone = string;
 
 type Order = {
+	items: ProductId[];
+	total: number;
 	payment: PaymentMethod;
+	address: string;
 	email: Email;
 	phone: Phone;
-	address: string;
-	total: number;
-	items: ProductId[];
 }
 
 interface ICatalogModel {
@@ -31,42 +34,36 @@ interface ICatalogModel {
 interface ICartModel {
 	items: Product[];
 	addItem: (item: Product) => void;
-	deleteItemById: (id: ProductId) => void;
-	placeOrder: () => void;
+	removeItemById: (id: ProductId) => void;
+	clear: () => void;
 }
 
 interface IView {
 	render: (data?: object) => HTMLElement;
 }
 
-interface IViewConstructor {
-	new(template: HTMLTemplateElement): IView;
+interface IViewConstructor<T extends IView> {
+	new(template: HTMLTemplateElement): T;
 }
 
-interface IMainPage extends IView {
-	cartItemsCount: HTMLElement;
+interface IMainPageView extends IView {
 	catalog: HTMLElement;
+	cartItemsCount: HTMLElement;
 }
 
-interface ICatalog extends IView {
-	items: HTMLElement[];
+interface ICatalogView extends IView {
+	cards: HTMLElement[];
 }
 
-interface ICart extends IView {
-	items: HTMLElement[];
-	total: HTMLElement;
+interface ICartView extends IView {
+	cards: HTMLElement[];
+	totalPriceLabel: HTMLElement;
 }
 
-interface ICard extends IView {}
-
-interface ICardConstructor extends IViewConstructor {}
+interface ICardView extends IView {}
 
 interface IForm extends IView {
-	onSubmit: () => void;
-	validate: () => void;
-}
-
-interface IFormConstructor extends IViewConstructor {
+	submitButton: HTMLButtonElement;
 	onSubmit: () => void;
 	validate: () => void;
 }
@@ -76,4 +73,11 @@ interface IModal {
 	open: () => void;
 	close: () => void;
 	setContent: (content: HTMLElement) => void;
+}
+
+interface IPresenter {
+	api: Api;
+	events: EventEmitter;
+	init: () => void;
+	renderView: () => void;
 }
