@@ -102,6 +102,8 @@ yarn build
 
 Для удобства все компоненты представления, которые должны отрисовать элемент или элементы будут наследовать интерфейс `IView`. Универсальный интерфейс представления, обладающий единственным методом отображения содержимого:
 * `render: (data?: object) => HTMLElement` - метод отрисовки, возвращающий готовый html-элемент.
+* `toggleElementClass(className: string, element: HTMLElement) => void` - добавить или удалить класс у элемента.
+* `setElementText(text: string, element: HTMLElement) => void` - добавить текст элементу.
 
 Если элемент создается из html-шаблона, то он должен так же наследовать интерфейс `IViewConstructor<T extends IView>`. Универсальный интерфейс конструктора представления:
 * `new(template: HTMLTemplateElement): T` - создание нового экземпляра `IView` из html-шаблона.
