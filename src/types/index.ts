@@ -1,9 +1,9 @@
 import { EventEmitter } from '../components/base/events';
 import { Api } from '../components/base/api';
 
-type ProductId = string;
+export type ProductId = string;
 
-type Product = {
+export type Product = {
 	id: ProductId;
 	title: string;
 	description: string;
@@ -16,7 +16,7 @@ type PaymentMethod = 'online' | 'on_delivery';
 type Email = string;
 type Phone = string;
 
-type Order = {
+export type Order = {
 	items: ProductId[];
 	total: number;
 	payment: PaymentMethod;

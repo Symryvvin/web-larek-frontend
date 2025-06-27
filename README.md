@@ -63,10 +63,18 @@ yarn build
 
 `Api` - класс для работы с backend API. 
 * `constructor(baseUrl: string, options: RequestInit = {})`- в конструкторе класса передается базовый url ресурса и дополнительный опции для всех запросов.
-* `get(uri: string)` - выполнение запроса с методом GET для получения данных по запросу.
-* `post(uri: string, data: object, method: ApiPostMethods = 'POST')` - выполнение запроса с методом POST для передачи данных на backend.
+* `protected handleResponse<T>(response: Response): Promise<T>` - метод обработки запросов, возвращает json в случае успеха или ошибку.
+* `get<T>(uri: string)` - выполнение запроса с методом GET для получения данных по запросу.
+* `post<T>(uri: string, data: object, method: ApiPostMethods = 'POST')` - выполнение запроса с методом POST для передачи данных на backend.
 
 ## Компоненты модели данных
+
+`ApplicationApi` - класс для работы с backend API, использующий `Api` и обладающий готовыми методами для работы с товарами и заказами:
+* `api: Api` - поле базового класса.
+* `constructor(api: Api)`- в конструкторе класса передается экземпляр класса `Api`.
+* `getProducts(): Product[]` - делает запрос на backend и возвращает список товаров.
+* `getProduct(id: ProductId): Product` - делает запрос на backend и возвращает товара по идентификатору.
+* `placeOrder(order: Order): Product` - делает запрос на backend и возвращает товара по идентификатору.
 
 `Product` - обладающий уникальным идентификатором `ProductId` набор данных определяющий товар. В общем виде товар определяется несколькими полями:
 * `ProductId` - идентификатор, простой тип на основе `string`.
