@@ -2,20 +2,31 @@ import './scss/styles.scss';
 import { ApplicationApi } from './components/ApplicationApi';
 import { Api } from './components/base/api';
 import { API_URL } from './utils/constants';
+import { CatalogModel } from './components/CatalogModel';
+import { cloneTemplate } from './utils/utils';
+import { CardInCatalog } from './components/CardInCatalog';
+import { Product } from './types';
+import { EventEmitter } from './components/base/events';
 
 const api = new ApplicationApi(new Api(API_URL));
+const events = new EventEmitter();
+
+const catalogModel = new CatalogModel(events);
+const cardInCatalogTemplate = document.querySelector('#card-catalog') as HTMLTemplateElement;
+
+api.getProducts().then(data => {
+	catalogModel.addItems(data.items);
+})
+	.catch(error => {
+		console.log(error)
+	});
 
 
-api.getProducts().then(data => console.log(data));
-api.getProduct('854cef69-976d-4c2a-a18c-2aa45046c390').then(data => console.log(data));
-api.placeOrder({
-	"payment": "online",
-	"email": "test@test.ru",
-	"phone": "+71234567890",
-	"address": "Spb Vosstania 1",
-	"total": 2200,
-	"items": [
-		"854cef69-976d-4c2a-a18c-2aa45046c390",
-		"c101ab44-ed99-4a54-990d-47aa2bb4e7d9"
-	]
-}).then(data => console.log(data));
+events.on('catalog:items_loaded', (data: Product[]) => {
+	const elems = Array.from(data).map(item => {
+		return new CardInCatalog(cloneTemplate(cardInCatalogTemplate), item.id).render(item);
+	});
+
+	console.log(elems);
+	document.querySelector('.gallery').append(...elems);
+})

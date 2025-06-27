@@ -1,6 +1,3 @@
-import { EventEmitter } from '../components/base/events';
-import { Api } from '../components/base/api';
-
 export type ProductId = string;
 
 export type Product = {
@@ -25,8 +22,7 @@ export type Order = {
 	phone: Phone;
 }
 
-interface ICatalogModel {
-	items: Product[];
+export interface ICatalogModel {
 	addItems: (items: Product[]) => void;
 	getItemById: (id: string) => Product;
 }
@@ -38,31 +34,7 @@ interface ICartModel {
 	clear: () => void;
 }
 
-interface IView {
-	render: (data?: object) => HTMLElement;
-}
-
-interface IViewConstructor<T extends IView> {
-	new(template: HTMLTemplateElement): T;
-}
-
-interface IMainPageView extends IView {
-	catalog: HTMLElement;
-	cartItemsCount: HTMLElement;
-}
-
-interface ICatalogView extends IView {
-	cards: HTMLElement[];
-}
-
-interface ICartView extends IView {
-	cards: HTMLElement[];
-	totalPriceLabel: HTMLElement;
-}
-
-interface ICardView extends IView {}
-
-interface IForm extends IView {
+interface IForm {
 	submitButton: HTMLButtonElement;
 	onSubmit: () => void;
 	validate: () => void;
@@ -77,8 +49,6 @@ interface IModal {
 }
 
 interface IPresenter {
-	api: Api;
-	events: EventEmitter;
 	init: () => void;
 	renderView: () => void;
 }
