@@ -47,7 +47,7 @@ export interface IModal {
 	close: () => void;
 }
 
-interface IPresenter {
+export interface IPresenter {
 	init: () => void;
 	renderView: () => void;
 }

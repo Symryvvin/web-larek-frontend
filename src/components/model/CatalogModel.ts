@@ -1,5 +1,5 @@
-import { ApplicationEvents, ICatalogModel, Product, ProductId } from '../types';
-import { IEvents } from './base/events';
+import { ApplicationEvents, ICatalogModel, Product, ProductId } from '../../types';
+import { IEvents } from '../base/events';
 
 export class CatalogModel implements ICatalogModel {
 	protected _items: Product[];

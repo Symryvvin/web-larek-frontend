@@ -1,6 +1,6 @@
-import { IModal } from "../types";
-import { Component } from "./base/Component";
-import { ensureElement } from "../utils/utils";
+import { IModal } from "../../types";
+import { Component } from "../base/Component";
+import { ensureElement } from "../../utils/utils";
 
 export class Modal extends Component<Modal> implements IModal {
 	protected _content: HTMLElement;

@@ -1,8 +1,8 @@
-import { Component } from './base/Component';
-import { ApplicationEvents, Product, ProductId } from '../types';
-import { ensureElement } from '../utils/utils';
-import { CDN_URL } from "../utils/constants";
-import { IEvents } from "./base/events";
+import { Component } from '../base/Component';
+import { ApplicationEvents, Product, ProductId } from '../../types';
+import { ensureElement } from '../../utils/utils';
+import { CDN_URL } from "../../utils/constants";
+import { IEvents } from "../base/events";
 
 export class Card extends Component<Product> {
 	protected _productId: ProductId;
