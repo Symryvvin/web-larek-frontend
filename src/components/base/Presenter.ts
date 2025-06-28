@@ -8,6 +8,4 @@ export abstract class Presenter implements IPresenter {
 
 	abstract init(): void;
 
-	abstract renderView(): void;
-
 }

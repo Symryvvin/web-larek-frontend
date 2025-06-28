@@ -89,6 +89,10 @@ export class CardPreview extends Component<Product> {
 		this._productId = productId;
 	}
 
+	get id(): ProductId {
+		return this._productId;
+	}
+
 	set inCart(inCart: boolean) {
 		this._inCart = inCart;
 		this.setButtonText();
@@ -116,3 +120,42 @@ export class CardPreview extends Component<Product> {
 	}
 }
 
+export class CardInCart extends Component<Product> {
+	protected _productId: ProductId;
+	protected indexElement: HTMLSpanElement;
+	protected titleElement: HTMLHeadingElement;
+	protected priceElement: HTMLSpanElement;
+	protected deleteCardButton: HTMLButtonElement;
+
+	constructor(container: HTMLElement, readonly events: IEvents) {
+		super(container);
+
+		this.indexElement = ensureElement<HTMLSpanElement>('.basket__item-index', this.container);
+		this.titleElement = ensureElement<HTMLHeadingElement>('.card__title', this.container);
+		this.priceElement = ensureElement<HTMLSpanElement>('.card__price', this.container);
+
+		this.deleteCardButton = ensureElement<HTMLButtonElement>('.basket__item-delete', this.container);
+
+		this.deleteCardButton.addEventListener('click', (event: MouseEvent) => {
+			event.preventDefault();
+			events.emit(ApplicationEvents.CART_ITEM_DELETED, {id: this._productId});
+		});
+	}
+
+	set id(productId: ProductId) {
+		this._productId = productId;
+	}
+
+	set index(index: number) {
+		this.indexElement.textContent = index.toString();
+	}
+
+	set title(title: string) {
+		this.titleElement.textContent = title;
+	}
+
+	set price(title: string) {
+		this.priceElement.textContent = title;
+	}
+
+}

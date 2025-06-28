@@ -10,8 +10,6 @@ export class CatalogPresenter extends Presenter {
 	protected catalogView: CatalogView;
 	protected cardPreview: CardPreview;
 
-	protected cardTemplate: HTMLTemplateElement;
-
 	init(): void {
 		this.catalogModel = new CatalogModel(this.events);
 
@@ -34,12 +32,17 @@ export class CatalogPresenter extends Presenter {
 		});
 	}
 
-	renderView(): void {
-		console.log("renderView");
-	}
-
 	renderCardPreview(productId: ProductId, inCart: boolean): HTMLElement {
 		this.cardPreview.inCart = inCart;
 		return this.cardPreview.render(this.catalogModel.getItemById(productId));
 	}
+
+	currentCardPreviewId(): ProductId {
+		return this.cardPreview.id;
+	}
+
+	findCatalogItemById(id: ProductId): Product {
+		return this.catalogModel.getItemById(id);
+	}
+
 }

@@ -27,9 +27,11 @@ export interface ICatalogModel {
 	getItemById: (id: string) => Product;
 }
 
-interface ICartModel {
+export interface ICartModel {
 	items: Product[];
+	getTotalPrice: () => number;
 	addItem: (item: Product) => void;
+	itemInCart: (id: ProductId) => boolean;
 	removeItemById: (id: ProductId) => void;
 	clear: () => void;
 }
@@ -49,12 +51,12 @@ export interface IModal {
 
 export interface IPresenter {
 	init: () => void;
-	renderView: () => void;
 }
 
 export enum ApplicationEvents {
 	CATALOG_ITEMS_LOADED = 'catalog:items_loaded',
 	CATALOG_CARD_SELECTED = 'catalog:card_selected',
+	CART_OPENED = 'cart:opened',
 	CART_ITEM_ADDED = 'cart:item_added',
 	CART_ITEM_DELETED = 'cart:item_deleted',
 	CART_CONTENT_CHANGED = 'cart:content_changed',
