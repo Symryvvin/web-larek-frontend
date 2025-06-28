@@ -4,7 +4,12 @@ import { IEvents } from "../base/events";
 import { CardInCart } from "./Card";
 import { cloneTemplate, ensureElement } from "../../utils/utils";
 
-export class CartView extends Component<{ items: Product[], total: number }> {
+type TCartProducts = {
+	items: Product[];
+	totalPrice: number;
+}
+
+export class CartView extends Component<TCartProducts> {
 	protected _cards: HTMLElement[];
 	protected itemListElement: HTMLUListElement;
 	protected totalPriceElement: HTMLSpanElement;
@@ -35,7 +40,7 @@ export class CartView extends Component<{ items: Product[], total: number }> {
 		this.itemListElement.replaceChildren(...this._cards);
 	}
 
-	set total(total: number) {
+	set totalPrice(total: number) {
 		this.totalPriceElement.textContent = total.toString();
 	}
 

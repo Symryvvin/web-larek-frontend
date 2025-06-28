@@ -1,4 +1,4 @@
-import { CatalogPresenter } from "./CatalogPresenter";
+import { MainPagePresenter } from "./MainPagePresenter";
 import { Presenter } from "../base/Presenter";
 import { ApplicationApi } from "../ApplicationApi";
 import { IEvents } from "../base/events";
@@ -11,7 +11,7 @@ export class ApplicationPresenter extends Presenter {
 
 	constructor(protected readonly api: ApplicationApi,
 	            protected readonly events: IEvents,
-	            protected readonly catalogPresenter: CatalogPresenter,
+	            protected readonly mainPagePresenter: MainPagePresenter,
 	            protected readonly cartPresenter: CartPresenter) {
 		super(api, events);
 	}
@@ -21,33 +21,24 @@ export class ApplicationPresenter extends Presenter {
 
 		this.events.on(ApplicationEvents.CATALOG_CARD_SELECTED, (data: { id: ProductId }) => {
 			const inCart = this.cartPresenter.isProductInCart(data.id);
-			this.openModal(this.catalogPresenter.renderCardPreview(data.id, inCart));
+			this.openModal(this.mainPagePresenter.renderCardPreview(data.id, inCart));
 		});
 
 		this.events.on(ApplicationEvents.CART_ITEM_ADDED, (data: { id: ProductId }) => {
-			const product = this.catalogPresenter.findCatalogItemById(data.id);
+			const product = this.mainPagePresenter.findCatalogItemById(data.id);
 			this.cartPresenter.addProductToCart(product);
 		});
 
 		this.events.on(ApplicationEvents.CART_CONTENT_CHANGED, () => {
-			const renderedCardPreviewId = this.catalogPresenter.currentCardPreviewId();
+			const renderedCardPreviewId = this.mainPagePresenter.currentCardPreviewId();
 			const inCart = this.cartPresenter.isProductInCart(renderedCardPreviewId);
 
-			this.catalogPresenter.renderCardPreview(renderedCardPreviewId, inCart);
+			this.mainPagePresenter.renderCardPreview(renderedCardPreviewId, inCart);
 		});
 
 		this.events.on(ApplicationEvents.CART_OPENED, () => {
 			this.openModal(this.cartPresenter.renderCart());
 		});
-
-		document.querySelector('.header__basket').addEventListener('click', (event: Event) => {
-			event.preventDefault();
-			this.events.emit(ApplicationEvents.CART_OPENED);
-		})
-	}
-
-	render(): void {
-		console.log('renderView');
 	}
 
 	openModal(content: HTMLElement): void {

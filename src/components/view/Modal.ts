@@ -2,7 +2,11 @@ import { IModal } from "../../types";
 import { Component } from "../base/Component";
 import { ensureElement } from "../../utils/utils";
 
-export class Modal extends Component<Modal> implements IModal {
+type ModalContent = {
+	content: HTMLElement;
+}
+
+export class Modal extends Component<ModalContent> implements IModal {
 	protected _content: HTMLElement;
 	protected closeButton: HTMLButtonElement;
 
@@ -27,7 +31,6 @@ export class Modal extends Component<Modal> implements IModal {
 		this.container.classList.remove('modal_active');
 		this._content.replaceChildren('');
 	}
-
 
 	open(): void {
 		this.container.classList.add('modal_active');

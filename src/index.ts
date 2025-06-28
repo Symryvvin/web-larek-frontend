@@ -3,14 +3,14 @@ import { ApplicationApi } from './components/ApplicationApi';
 import { Api } from './components/base/api';
 import { API_URL } from './utils/constants';
 import { EventEmitter } from './components/base/events';
-import { CatalogPresenter } from "./components/presenter/CatalogPresenter";
+import { MainPagePresenter } from "./components/presenter/MainPagePresenter";
 import { ApplicationPresenter } from "./components/presenter/ApplicationPresenter";
 import { CartPresenter } from "./components/presenter/CartPresenter";
 
 const api = new ApplicationApi(new Api(API_URL));
 const events = new EventEmitter();
 
-const catalogPresenter = new CatalogPresenter(api, events);
+const catalogPresenter = new MainPagePresenter(api, events);
 catalogPresenter.init();
 const cartPresenter = new CartPresenter(api, events);
 cartPresenter.init();

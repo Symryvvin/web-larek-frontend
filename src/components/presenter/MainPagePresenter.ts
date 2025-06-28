@@ -3,19 +3,19 @@ import { CardPreview } from "../view/Card";
 import { CatalogModel } from "../model/CatalogModel";
 import { cloneTemplate } from "../../utils/utils";
 import { Presenter } from "../base/Presenter";
-import { CatalogView } from "../view/CatalogView";
+import { MainPageView } from "../view/MainPageView";
 
-export class CatalogPresenter extends Presenter {
+export class MainPagePresenter extends Presenter {
 	protected catalogModel: ICatalogModel;
-	protected catalogView: CatalogView;
+	protected mainPageView: MainPageView;
 	protected cardPreview: CardPreview;
 
 	init(): void {
 		this.catalogModel = new CatalogModel(this.events);
 
-		const gallery = document.querySelector('.gallery') as HTMLElement;
+		const pageElement = document.querySelector('.page') as HTMLElement;
 		const cardTemplate = document.querySelector('#card-catalog') as HTMLTemplateElement;
-		this.catalogView = new CatalogView(gallery, cardTemplate, this.events);
+		this.mainPageView = new MainPageView(pageElement, cardTemplate, this.events);
 
 		const cardPreviewTemplate = document.querySelector('#card-preview') as HTMLTemplateElement;
 		this.cardPreview = new CardPreview(cloneTemplate(cardPreviewTemplate), this.events);
@@ -28,7 +28,11 @@ export class CatalogPresenter extends Presenter {
 			});
 
 		this.events.on(ApplicationEvents.CATALOG_ITEMS_LOADED, (data: Product[]) => {
-			this.catalogView.render({items: data});
+			this.mainPageView.render({items: data});
+		});
+
+		this.events.on(ApplicationEvents.CART_CONTENT_CHANGED, (data: Product[]) => {
+			this.mainPageView.render({totalInCart: data.length});
 		});
 	}
 

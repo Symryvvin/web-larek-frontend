@@ -16,19 +16,18 @@ export class CartPresenter extends Presenter {
 		this.cartView = new CartView(cloneTemplate(cartTemplate), cardTemplate, this.events);
 
 		this.events.on(ApplicationEvents.CART_CONTENT_CHANGED, () => {
-			this.cartView.render({items: this.cartModel.items, total: this.cartModel.getTotalPrice()});
+			this.cartView.render({items: this.cartModel.items, totalPrice: this.cartModel.getTotalPrice()});
 		});
 
 		this.events.on(ApplicationEvents.CART_ITEM_DELETED, (data: { id: ProductId }) => {
 			this.cartModel.removeItemById(data.id);
-			this.events.emit(ApplicationEvents.CART_CONTENT_CHANGED);
+			this.events.emit(ApplicationEvents.CART_CONTENT_CHANGED, this.cartModel.items);
 		});
-
 	}
 
 	addProductToCart(product: Product): void {
 		this.cartModel.addItem(product);
-		this.events.emit(ApplicationEvents.CART_CONTENT_CHANGED);
+		this.events.emit(ApplicationEvents.CART_CONTENT_CHANGED, this.cartModel.items);
 	}
 
 	isProductInCart(id: ProductId): boolean {
