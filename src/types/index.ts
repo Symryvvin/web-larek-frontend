@@ -23,7 +23,7 @@ export type Order = {
 }
 
 export interface ICatalogModel {
-	addItems: (items: Product[]) => void;
+	items: Product[];
 	getItemById: (id: string) => Product;
 }
 
@@ -41,14 +41,25 @@ interface IForm {
 	getFormData: () => object;
 }
 
-interface IModal {
+export interface IModal {
 	content: HTMLElement;
 	open: () => void;
 	close: () => void;
-	setContent: (content: HTMLElement) => void;
 }
 
 interface IPresenter {
 	init: () => void;
 	renderView: () => void;
+}
+
+export enum ApplicationEvents {
+	CATALOG_ITEMS_LOADED = 'catalog:items_loaded',
+	CATALOG_CARD_SELECTED = 'catalog:card_selected',
+	CART_ITEM_ADDED = 'cart:item_added',
+	CART_ITEM_DELETED = 'cart:item_deleted',
+	CART_CONTENT_CHANGED = 'cart:content_changed',
+	ORDER_CREATED = 'order:created',
+	ORDER_FORMED = 'order:formed',
+	ORDER_PAYMENT_SELECTED = 'order:payment_selected',
+	ORDER_PLACED = 'order:placed'
 }
