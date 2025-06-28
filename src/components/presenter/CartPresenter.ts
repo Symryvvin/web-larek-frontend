@@ -29,6 +29,13 @@ export class CartPresenter extends Presenter {
 			this.cartModel.removeItemById(data.id);
 			this.events.emit(ApplicationEvents.CART_CONTENT_CHANGED, this.cartModel.items);
 		});
+
+		this.events.on(ApplicationEvents.ORDER_CREATED, () => {
+			const productIds = this.cartModel.items.map(item => item.id);
+			const totalPrice = this.cartModel.getTotalPrice();
+
+			this.events.emit(ApplicationEvents.ORDER_FORMED, {items: productIds, total: totalPrice});
+		});
 	}
 
 	addProductToCart(product: Product): void {

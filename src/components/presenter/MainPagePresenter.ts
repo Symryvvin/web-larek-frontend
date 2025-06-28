@@ -54,4 +54,6 @@ export class MainPagePresenter extends Presenter {
 		return this.catalogModel.getItemById(id);
 	}
 
+	//TODO блокировать страницу с .page__wrapper_locked
+
 }

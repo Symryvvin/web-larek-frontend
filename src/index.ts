@@ -8,6 +8,8 @@ import { ApplicationPresenter } from "./components/presenter/ApplicationPresente
 import { CartPresenter } from "./components/presenter/CartPresenter";
 import { Modal } from "./components/view/Modal";
 import { ApplicationElements } from "./components/Elements";
+import { OrderForm } from "./components/view/Form";
+import { cloneTemplate } from "./utils/utils";
 
 const api = new ApplicationApi(new Api(API_URL));
 const events = new EventEmitter();
@@ -17,7 +19,7 @@ const catalogPresenter = new MainPagePresenter(
 	events,
 	ApplicationElements.page,
 	ApplicationElements.cardTemplate,
-	ApplicationElements.cardPreviewTemplate
+	ApplicationElements.cardPreviewTemplate,
 );
 catalogPresenter.init();
 
@@ -29,5 +31,6 @@ const cartPresenter = new CartPresenter(
 cartPresenter.init();
 
 const modal = new Modal(ApplicationElements.modal);
-new ApplicationPresenter(api, events, catalogPresenter, cartPresenter, modal)
+const orderForm = new OrderForm(cloneTemplate(ApplicationElements.orderFormTemplate));
+new ApplicationPresenter(api, events, catalogPresenter, cartPresenter, modal, orderForm)
 	.init();

@@ -171,22 +171,33 @@ yarn build
 ---
 ### Формы
 
-`IForm` - универсальный интерфейс для форм, расширяет интерфейс `IView` методами отправки и валидации:
-* `submitButton: HTMLButtonElement` - кнопка отправки формы.
-* `onSubmit: () => void` - отправка формы.
+`TFormValidationError = string | undefined` - тип ошибок валидации формы. Может быть строка или undefined.
+
+`IForm` - универсальный интерфейс для форм в котором должны быть обязательно реализованы метода в любой форме приложения:
+* `onSubmit: () => void` - поле хранящее функцию отправки формы и setter для данного элемента. 
+* `errors: TFormValidationError[]` - массив ошибок валидации и setter для данного элемента.
 * `validate: () => void` - валидация формы.
 * `getFormData: () => object` - получить данные формы.
+* `render: (data?: object) => HTMLElement` - отрисовка представления формы.
 
-`OrderForm` - форма оформления заказа. Класс, которые реализует интерфейс представления `IForm`. Форма создается из html-шаблона по id `'#order'`. Компоненты формы:
-* `paymentButton: HTMLButtonElement[]` - кнопки выбора формы оплаты `'.card'`, `'.cash'`.
-* `addressInput: HTMLInputElement` - поле ввода адреса `'.address'`.
 
-`ContactsForm` - форма заполнения контактных данных пользователя. Класс, который реализует интерфейс `IForm`.  Форма создается из html-шаблона по id `'#contacts'`. Компоненты формы:
-* `emailInput: HTMLInputElement` - поле ввода e-mail `'.email'`.
-* `phoneInput: HTMLInputElement` - поле ввода телефона `'.phone'`.
+`Form<T>` - абстрактный класс формы, расширяющий `Component<T>` и реализующий интерфейс `IForm`. Методы `validate` и `getFormData(): Partial<T>` все еще абстрактные:
+* `formValidationErrorsElement: HTMLSpanElement`- элемент блока с ошибками валидации.
+* `submitButton: HTMLButtonElement` - кнопка отправки формы.
+* `validateInput(input: HTMLInputElement): TFormValidationError` - вспомогательный метод валидации input-элементов формы.
 
-`OrderSuccess` - представление успешного оформления заказа, расширяет интерфейс `IForm` с единственным полем:
-* `description: HTMLElement` - блок текста `'.order-success__description'`.
+`OrderForm` - форма оформления заказа. Класс, которые расширяет формы `Form<Order>`. Форма создается из html-шаблона по id `'#order'`. Форма работает с текущим заказом:
+* `paymentButton: HTMLButtonElement[]` - кнопки выбора формы оплаты.
+* `addressInput: HTMLInputElement` - поле ввода адреса.
+
+`ContactsForm` - форма заполнения контактных данных пользователя. Класс, которые расширяет формы `Form<Order>`.  Форма создается из html-шаблона по id `'#contacts'`. Форма работает с текущим заказом:
+* `emailInput: HTMLInputElement` - поле ввода e-mail.
+* `phoneInput: HTMLInputElement` - поле ввода телефона.
+
+### Другие представления
+
+`OrderSuccess` - представление успешного оформления заказа, с единственным полем:
+* `description: HTMLElement` - блок текста об успешном выполнении заказа.
 
 ---
 

@@ -2,16 +2,19 @@ import { MainPagePresenter } from "./MainPagePresenter";
 import { Presenter } from "../base/Presenter";
 import { ApplicationApi } from "../ApplicationApi";
 import { IEvents } from "../base/events";
-import { Modal } from "../view/Modal";
-import { ApplicationEvents, IModal, ProductId } from "../../types";
+import { ApplicationEvents, IForm, IModal, Order, ProductId } from "../../types";
 import { CartPresenter } from "./CartPresenter";
 
 export class ApplicationPresenter extends Presenter {
+	protected order: Order;
+
 	constructor(protected readonly api: ApplicationApi,
 	            protected readonly events: IEvents,
 	            protected readonly mainPagePresenter: MainPagePresenter,
 	            protected readonly cartPresenter: CartPresenter,
-	            protected readonly modal: IModal) {
+	            protected readonly modal: IModal,
+	            protected readonly orderForm: IForm,
+	) {
 		super(api, events);
 	}
 
@@ -35,6 +38,27 @@ export class ApplicationPresenter extends Presenter {
 
 		this.events.on(ApplicationEvents.CART_OPENED, () => {
 			this.openModal(this.cartPresenter.renderCart());
+		});
+
+		this.events.on(ApplicationEvents.ORDER_FORMED, (order: Partial<Order>) => {
+			this.modal.close();
+
+			this.order = order as Order;
+
+			this.orderForm.onSubmit =
+				() => this.events.emit(ApplicationEvents.ORDER_PAYMENT_SELECTED, this.orderForm.getFormData());
+			this.orderForm.validate();
+
+			this.openModal(this.orderForm.render());
+		});
+
+		this.events.on(ApplicationEvents.ORDER_PAYMENT_SELECTED, (order: Partial<Order>) => {
+			this.modal.close();
+
+			this.order = Object.assign(this.order, order);
+
+			// this.openModal(this.orderForm.render());
+			console.log(this.order);
 		});
 	}
 

@@ -9,7 +9,7 @@ export type Product = {
 	price: number;
 }
 
-type PaymentMethod = 'online' | 'on_delivery';
+export type PaymentMethod = 'online' | 'on_delivery';
 type Email = string;
 type Phone = string;
 
@@ -36,11 +36,14 @@ export interface ICartModel {
 	clear: () => void;
 }
 
-interface IForm {
-	submitButton: HTMLButtonElement;
+export type TFormValidationError = string | undefined;
+
+export interface IForm {
+	errors: TFormValidationError[];
 	onSubmit: () => void;
 	validate: () => void;
 	getFormData: () => object;
+	render: (data?: object) => HTMLElement;
 }
 
 export interface IModal {
