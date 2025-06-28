@@ -126,7 +126,9 @@ yarn build
 
 `ICartView` - содержимое корзины, расширяет `IViewConstructor`, создается по шаблону c id `'#basket'` и содержит:
 * `cards: HTMLElement[]` - коллекцию HTML элементов карточек товаров.
-* `totalPriceLabel: HTMLElement` - элемент по селектору `'.basket__price'`, содержащий информацию о полной стоимости товаров в корзине.
+* `itemListElement: HTMLUListElement` - обертка для списка карточек товаров.
+* `totalPriceElement: HTMLElement` - элемент по селектору `'.basket__price'`, содержащий информацию о полной стоимости товаров в корзине.
+* `cartButton: HTMLButtonElement` - кнопка удаления товара из корзины.
 
 ---
 
