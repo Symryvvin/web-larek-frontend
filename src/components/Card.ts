@@ -5,7 +5,7 @@ import { CDN_URL } from "../utils/constants";
 import { IEvents } from "./base/events";
 
 export class Card extends Component<Product> {
-	protected  _productId: ProductId;
+	protected _productId: ProductId;
 	protected titleElement: HTMLHeadingElement;
 	protected categoryElement: HTMLSpanElement;
 	protected imageElement: HTMLImageElement;
@@ -73,7 +73,16 @@ export class CardPreview extends Component<Product> {
 		this.descriptionElement = ensureElement<HTMLParagraphElement>('.card__text', this.container);
 		this.cardButton = ensureElement<HTMLButtonElement>('.card__button', this.container);
 
-		this.toggleCartState(this._inCart);
+		this.setButtonText();
+		this.cardButton.addEventListener('click', (event: MouseEvent) => {
+			event.preventDefault();
+			const appEventName = this._inCart ? ApplicationEvents.CART_ITEM_DELETED : ApplicationEvents.CART_ITEM_ADDED
+			this.events.emit(appEventName, {id: this._productId});
+		});
+	}
+
+	private setButtonText() {
+		this.cardButton.textContent = this._inCart ? CardPreviewButtonText.IN_CART : CardPreviewButtonText.ADD_TO_CARD;
 	}
 
 	set id(productId: ProductId) {
@@ -82,6 +91,7 @@ export class CardPreview extends Component<Product> {
 
 	set inCart(inCart: boolean) {
 		this._inCart = inCart;
+		this.setButtonText();
 	}
 
 	set title(title: string) {
@@ -103,24 +113,6 @@ export class CardPreview extends Component<Product> {
 
 	set description(title: string) {
 		this.descriptionElement.textContent = title;
-	}
-
-	toggleCartState(inCart: boolean) {
-		if (inCart) {
-			this.cardButton.textContent = CardPreviewButtonText.IN_CART;
-			this.cardButton.onclick = (event: MouseEvent) => {
-				event.preventDefault();
-				this.events.emit(ApplicationEvents.CART_ITEM_DELETED, {id: this._productId});
-				this.cardButton.textContent = CardPreviewButtonText.ADD_TO_CARD;
-			}
-		} else {
-			this.cardButton.textContent = CardPreviewButtonText.ADD_TO_CARD;
-			this.cardButton.onclick = (event: MouseEvent) => {
-				event.preventDefault();
-				this.events.emit(ApplicationEvents.CART_ITEM_ADDED, {id: this._productId});
-				this.cardButton.textContent = CardPreviewButtonText.IN_CART;
-			}
-		}
 	}
 }
 

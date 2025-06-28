@@ -49,7 +49,7 @@ events.on(ApplicationEvents.CATALOG_CARD_SELECTED, (data: { id: ProductId }) => 
 
 events.on(ApplicationEvents.CART_ITEM_ADDED, (data: { id: ProductId }) => {
 	//TODO check card state in cart by id in current preview
-	cardPreview.toggleCartState(true);
+	cardPreview.inCart = true;
 	cardPreview.render(catalogModel.getItemById(data.id));
 
 	//TODO cart content render
@@ -57,8 +57,8 @@ events.on(ApplicationEvents.CART_ITEM_ADDED, (data: { id: ProductId }) => {
 
 events.on(ApplicationEvents.CART_ITEM_DELETED, (data: { id: ProductId }) => {
 	//TODO check card state in cart by id in current preview
-	cardPreview.toggleCartState(false);
+	cardPreview.inCart = false;
 	cardPreview.render(catalogModel.getItemById(data.id));
 
 	//TODO cart content render
-})
+});
