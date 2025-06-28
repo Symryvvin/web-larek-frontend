@@ -4,22 +4,27 @@ import { CatalogModel } from "../model/CatalogModel";
 import { cloneTemplate } from "../../utils/utils";
 import { Presenter } from "../base/Presenter";
 import { MainPageView } from "../view/MainPageView";
+import { ApplicationApi } from "../ApplicationApi";
+import { IEvents } from "../base/events";
 
 export class MainPagePresenter extends Presenter {
 	protected catalogModel: ICatalogModel;
 	protected mainPageView: MainPageView;
 	protected cardPreview: CardPreview;
 
+	constructor(protected readonly api: ApplicationApi,
+	            protected readonly events: IEvents,
+	            protected readonly page: HTMLElement,
+	            protected readonly cardTemplate: HTMLTemplateElement,
+	            protected readonly cardPreviewTemplate: HTMLTemplateElement) {
+		super(api, events);
+
+		this.catalogModel = new CatalogModel(events);
+		this.mainPageView = new MainPageView(page, cardTemplate, events);
+		this.cardPreview = new CardPreview(cloneTemplate(cardPreviewTemplate), events);
+	}
+
 	init(): void {
-		this.catalogModel = new CatalogModel(this.events);
-
-		const pageElement = document.querySelector('.page') as HTMLElement;
-		const cardTemplate = document.querySelector('#card-catalog') as HTMLTemplateElement;
-		this.mainPageView = new MainPageView(pageElement, cardTemplate, this.events);
-
-		const cardPreviewTemplate = document.querySelector('#card-preview') as HTMLTemplateElement;
-		this.cardPreview = new CardPreview(cloneTemplate(cardPreviewTemplate), this.events);
-
 		this.api.getProducts().then(data => {
 			this.catalogModel.items = data.items;
 		})

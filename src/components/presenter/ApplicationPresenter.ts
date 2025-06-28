@@ -7,18 +7,15 @@ import { ApplicationEvents, IModal, ProductId } from "../../types";
 import { CartPresenter } from "./CartPresenter";
 
 export class ApplicationPresenter extends Presenter {
-	protected modal: IModal;
-
 	constructor(protected readonly api: ApplicationApi,
 	            protected readonly events: IEvents,
 	            protected readonly mainPagePresenter: MainPagePresenter,
-	            protected readonly cartPresenter: CartPresenter) {
+	            protected readonly cartPresenter: CartPresenter,
+	            protected readonly modal: IModal) {
 		super(api, events);
 	}
 
 	init(): void {
-		this.modal = new Modal(document.querySelector('#modal-container') as HTMLTemplateElement);
-
 		this.events.on(ApplicationEvents.CATALOG_CARD_SELECTED, (data: { id: ProductId }) => {
 			const inCart = this.cartPresenter.isProductInCart(data.id);
 			this.openModal(this.mainPagePresenter.renderCardPreview(data.id, inCart));

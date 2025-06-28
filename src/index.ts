@@ -6,12 +6,28 @@ import { EventEmitter } from './components/base/events';
 import { MainPagePresenter } from "./components/presenter/MainPagePresenter";
 import { ApplicationPresenter } from "./components/presenter/ApplicationPresenter";
 import { CartPresenter } from "./components/presenter/CartPresenter";
+import { Modal } from "./components/view/Modal";
+import { ApplicationElements } from "./components/Elements";
 
 const api = new ApplicationApi(new Api(API_URL));
 const events = new EventEmitter();
 
-const catalogPresenter = new MainPagePresenter(api, events);
+const catalogPresenter = new MainPagePresenter(
+	api,
+	events,
+	ApplicationElements.page,
+	ApplicationElements.cardTemplate,
+	ApplicationElements.cardPreviewTemplate
+);
 catalogPresenter.init();
-const cartPresenter = new CartPresenter(api, events);
+
+const cartPresenter = new CartPresenter(
+	api,
+	events,
+	ApplicationElements.cartTemplate,
+	ApplicationElements.cardInCartTemplate);
 cartPresenter.init();
-new ApplicationPresenter(api, events, catalogPresenter, cartPresenter).init();
+
+const modal = new Modal(ApplicationElements.modal);
+new ApplicationPresenter(api, events, catalogPresenter, cartPresenter, modal)
+	.init();
