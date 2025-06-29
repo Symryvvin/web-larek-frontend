@@ -30,7 +30,7 @@ const cartPresenter = new CartPresenter(
 	ApplicationElements.cardInCartTemplate);
 cartPresenter.init();
 
-const modal = new Modal(ApplicationElements.modal);
+const modal = new Modal(ApplicationElements.modal, events);
 const orderForm = new OrderForm(cloneTemplate(ApplicationElements.orderFormTemplate));
 new ApplicationPresenter(api, events, catalogPresenter, cartPresenter, modal, orderForm)
 	.init();

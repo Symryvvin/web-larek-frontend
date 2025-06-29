@@ -1,6 +1,7 @@
-import { IModal } from "../../types";
+import { ApplicationEvents, IModal } from "../../types";
 import { Component } from "../base/Component";
 import { ensureElement } from "../../utils/utils";
+import { IEvents } from "../base/events";
 
 type ModalContent = {
 	content: HTMLElement;
@@ -10,7 +11,7 @@ export class Modal extends Component<ModalContent> implements IModal {
 	protected _content: HTMLElement;
 	protected closeButton: HTMLButtonElement;
 
-	constructor(container: HTMLElement) {
+	constructor(container: HTMLElement, protected readonly events: IEvents) {
 		super(container);
 
 		this._content = ensureElement<HTMLElement>('.modal__content', this.container);
@@ -30,10 +31,12 @@ export class Modal extends Component<ModalContent> implements IModal {
 	close(): void {
 		this.container.classList.remove('modal_active');
 		this._content.replaceChildren('');
+		this.events.emit(ApplicationEvents.MODAL_CLOSED);
 	}
 
 	open(): void {
 		this.container.classList.add('modal_active');
+		this.events.emit(ApplicationEvents.MODAL_OPENED);
 	}
 
 }

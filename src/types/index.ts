@@ -67,7 +67,8 @@ export enum ApplicationEvents {
 	CART_ITEM_DELETED = 'cart:item_deleted',
 	CART_CONTENT_CHANGED = 'cart:content_changed',
 	ORDER_CREATED = 'order:created',
-	ORDER_FORMED = 'order:formed',
 	ORDER_PAYMENT_SELECTED = 'order:payment_selected',
-	ORDER_PLACED = 'order:placed'
+	ORDER_PLACED = 'order:placed',
+	MODAL_OPENED = 'modal:opened',
+	MODAL_CLOSED = 'modal:closed'
 }

@@ -29,6 +29,8 @@ export class MainPagePresenter extends Presenter {
 
 		this.events.on(ApplicationEvents.CATALOG_ITEMS_LOADED, (data: Product[]) => this.catalogItemsLoadedCallback(data));
 		this.events.on(ApplicationEvents.CART_CONTENT_CHANGED, (data: { total: number }) => this.cartContentChangedCallback(data));
+		this.events.on(ApplicationEvents.MODAL_OPENED,  () => this.modalOpenedCallback());
+		this.events.on(ApplicationEvents.MODAL_CLOSED, () => this.modalClosedCallback());
 	}
 
 	loadItems(): void {
@@ -48,6 +50,13 @@ export class MainPagePresenter extends Presenter {
 		this.mainPageView.render({totalInCart: data.total});
 	}
 
+	modalOpenedCallback() {
+		this.mainPageView.lock = true;
+	}
+
+	modalClosedCallback() {
+		this.mainPageView.lock = false;
+	}
 
 	renderCardPreview(productId: ProductId, inCart: boolean): HTMLElement {
 		this.cardPreview.inCart = inCart;
@@ -57,7 +66,5 @@ export class MainPagePresenter extends Presenter {
 	currentCardPreviewId(): ProductId {
 		return this.cardPreview.id;
 	}
-
-	//TODO блокировать страницу с .page__wrapper_locked
 
 }

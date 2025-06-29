@@ -15,11 +15,14 @@ export class MainPageView extends Component<TMainPage> {
 	protected cartButton: HTMLButtonElement;
 	protected cartItemsCount: HTMLSpanElement;
 
+	protected pageWrapperElement: HTMLElement;
+
 	constructor(protected readonly container: HTMLElement,
 	            protected readonly cardTemplate: HTMLTemplateElement,
 	            protected readonly events: IEvents) {
 		super(container);
 
+		this.pageWrapperElement = ensureElement<HTMLElement>('.page__wrapper', this.container);
 		this.galleryElement = ensureElement<HTMLElement>('.gallery', this.container);
 		this.cartButton = ensureElement<HTMLButtonElement>('.header__basket', this.container);
 		this.cartItemsCount = ensureElement<HTMLButtonElement>('.header__basket-counter', this.container);
@@ -39,6 +42,16 @@ export class MainPageView extends Component<TMainPage> {
 
 	set totalInCart(totalInCart: number) {
 		this.cartItemsCount.textContent = totalInCart.toString();
+	}
+
+	set lock(lock: boolean) {
+		if (lock) {
+			console.log(this.pageWrapperElement.classList);
+			this.pageWrapperElement.classList.add('page__wrapper_locked');
+			console.log(this.pageWrapperElement.classList);
+		} else {
+			this.pageWrapperElement.classList.remove('page__wrapper_locked');
+		}
 	}
 
 }
