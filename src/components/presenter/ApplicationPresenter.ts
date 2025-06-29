@@ -4,6 +4,7 @@ import { ApplicationApi } from "../ApplicationApi";
 import { IEvents } from "../base/events";
 import { ApplicationEvents, IForm, IModal, Order, ProductId } from "../../types";
 import { CartPresenter } from "./CartPresenter";
+import { OrderSuccessView } from "../view/OrderSuccessView";
 
 export class ApplicationPresenter extends Presenter {
 	protected order: Order;
@@ -14,16 +15,18 @@ export class ApplicationPresenter extends Presenter {
 	            protected readonly cartPresenter: CartPresenter,
 	            protected readonly modal: IModal,
 	            protected readonly orderForm: IForm,
-	            protected readonly contactsForm: IForm
+	            protected readonly contactsForm: IForm,
+	            protected readonly orderSuccessView: OrderSuccessView
 	) {
 		super(api, events);
 
-		this.orderForm.onSubmit = () =>
-			this.events.emit(ApplicationEvents.ORDER_PAYMENT_SELECTED, this.orderForm.getFormData());
+		this.orderForm.onSubmit = () => this.events.emit(ApplicationEvents.ORDER_PAYMENT_SELECTED, this.orderForm.getFormData());
 		this.orderForm.validate();
-		this.contactsForm.onSubmit = () =>
-			this.events.emit(ApplicationEvents.ORDER_PLACED, this.contactsForm.getFormData());
+		this.contactsForm.onSubmit = () => this.events.emit(ApplicationEvents.ORDER_PLACED, this.contactsForm.getFormData());
 		this.contactsForm.validate();
+		this.orderSuccessView.onClose = () => {
+			this.modal.close();
+		};
 	}
 
 	init(): void {
@@ -35,47 +38,47 @@ export class ApplicationPresenter extends Presenter {
 		this.events.on(ApplicationEvents.ORDER_PLACED, (order: Partial<Order>) => this.orderPlacedCallback(order));
 	}
 
-	catalogCardSelectedCallback(data: { id: ProductId }): void {
+	private catalogCardSelectedCallback(data: { id: ProductId }): void {
 		const inCart = this.cartPresenter.isProductInCart(data.id);
 		this.openModal(this.mainPagePresenter.renderCardPreview(data.id, inCart));
 	}
 
-	cartContentChangedCallback(): void {
+	private cartContentChangedCallback(): void {
 		const renderedCardPreviewId = this.mainPagePresenter.currentCardPreviewId();
 		const inCart = this.cartPresenter.isProductInCart(renderedCardPreviewId);
 
 		this.mainPagePresenter.renderCardPreview(renderedCardPreviewId, inCart);
 	}
 
-	cartOpenedCallback() {
+	private cartOpenedCallback() {
 		this.openModal(this.cartPresenter.renderCart());
 	}
 
-	orderCreatedCallback(data: { items: ProductId[], total: number }) {
+	private orderCreatedCallback(data: { items: ProductId[], total: number }) {
 		this.order = data as Order;
 		this.openModal(this.orderForm.render());
 	}
 
-	orderFormedCallback(order: Partial<Order>) {
+	private orderFormedCallback(order: Partial<Order>) {
 		this.order = Object.assign(this.order, order);
 		this.openModal(this.contactsForm.render());
 	}
 
-	orderPlacedCallback(order: Partial<Order>) {
+	private orderPlacedCallback(order: Partial<Order>) {
 		this.order = Object.assign(this.order, order);
 
 		this.api.placeOrder(this.order).then(data => {
-			//TODO send event order placer or open modal directly
-			console.log(data);
+			this.openModal(this.orderSuccessView.render({total: data.total}));
+			this.cartPresenter.clearCart();
 		})
 			.catch(error => {
 				console.log(error)
 			});
 	}
 
-	//TODO implement order state with modal
+	//TODO implement order state with modal?
 
-	openModal(content: HTMLElement): void {
+	private openModal(content: HTMLElement): void {
 		this.modal.close();
 		this.modal.content = content;
 		this.modal.open();

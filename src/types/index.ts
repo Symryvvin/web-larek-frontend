@@ -39,6 +39,11 @@ export type TCartProducts = {
 	items: Product[];
 }
 
+export type TOrderSuccessful = {
+	id: string;
+	total: number;
+}
+
 export type TFormValidationError = string | undefined;
 
 export interface IForm {

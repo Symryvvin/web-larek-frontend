@@ -10,31 +10,33 @@ import { Modal } from "./components/view/Modal";
 import { ApplicationElements } from "./components/Elements";
 import { ContactsForm, OrderForm } from "./components/view/Form";
 import { cloneTemplate } from "./utils/utils";
+import { OrderSuccessView } from "./components/view/OrderSuccessView";
+import { MainPageView } from "./components/view/MainPageView";
+import { CardPreview } from "./components/view/Card";
+import { CatalogModel } from "./components/model/CatalogModel";
+import { CartModel } from "./components/model/CartModel";
+import { CartView } from "./components/view/CartView";
 
 const api = new ApplicationApi(new Api(API_URL));
 const events = new EventEmitter();
 
-const catalogPresenter = new MainPagePresenter(
-	api,
-	events,
-	ApplicationElements.page,
-	ApplicationElements.cardTemplate,
-	ApplicationElements.cardPreviewTemplate,
-);
+const pageView = new MainPageView(ApplicationElements.page, ApplicationElements.cardTemplate, events);
+const cardPreview = new CardPreview(cloneTemplate(ApplicationElements.cardPreviewTemplate), events);
+const catalogModel = new CatalogModel(events);
+const catalogPresenter = new MainPagePresenter(api, events, catalogModel, pageView, cardPreview,);
 catalogPresenter.init();
 
-const cartPresenter = new CartPresenter(
-	api,
-	events,
-	ApplicationElements.cartTemplate,
-	ApplicationElements.cardInCartTemplate);
+
+const cartModel = new CartModel(events);
+const cartView = new CartView(cloneTemplate(ApplicationElements.cartTemplate), ApplicationElements.cardInCartTemplate, events);
+const cartPresenter = new CartPresenter(api, events, cartModel, cartView);
 cartPresenter.init();
 
 const modal = new Modal(ApplicationElements.modal, events);
 const orderForm = new OrderForm(cloneTemplate(ApplicationElements.orderFormTemplate));
 const contactsForm = new ContactsForm(cloneTemplate(ApplicationElements.contactsFormTemplate));
-new ApplicationPresenter(api, events, catalogPresenter, cartPresenter, modal, orderForm, contactsForm)
-	.init();
+const orderSuccessView = new OrderSuccessView(cloneTemplate(ApplicationElements.orderSuccessTemplate));
+new ApplicationPresenter(api, events, catalogPresenter, cartPresenter, modal, orderForm, contactsForm, orderSuccessView).init();
 
 
 // enable debug add application events

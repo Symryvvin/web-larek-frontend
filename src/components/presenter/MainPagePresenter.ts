@@ -1,27 +1,17 @@
 import { ApplicationEvents, ICatalogModel, Product, ProductId } from "../../types";
 import { CardPreview } from "../view/Card";
-import { CatalogModel } from "../model/CatalogModel";
-import { cloneTemplate } from "../../utils/utils";
 import { Presenter } from "../base/Presenter";
 import { MainPageView } from "../view/MainPageView";
 import { ApplicationApi } from "../ApplicationApi";
 import { IEvents } from "../base/events";
 
 export class MainPagePresenter extends Presenter {
-	protected catalogModel: ICatalogModel;
-	protected mainPageView: MainPageView;
-	protected cardPreview: CardPreview;
-
 	constructor(protected readonly api: ApplicationApi,
 	            protected readonly events: IEvents,
-	            protected readonly page: HTMLElement,
-	            protected readonly cardTemplate: HTMLTemplateElement,
-	            protected readonly cardPreviewTemplate: HTMLTemplateElement) {
+	            protected readonly catalogModel: ICatalogModel,
+	            protected readonly mainPageView: MainPageView,
+	            protected readonly cardPreview: CardPreview) {
 		super(api, events);
-
-		this.catalogModel = new CatalogModel(events);
-		this.mainPageView = new MainPageView(page, cardTemplate, events);
-		this.cardPreview = new CardPreview(cloneTemplate(cardPreviewTemplate), events);
 	}
 
 	init(): void {
@@ -29,7 +19,7 @@ export class MainPagePresenter extends Presenter {
 
 		this.events.on(ApplicationEvents.CATALOG_ITEMS_LOADED, (data: Product[]) => this.catalogItemsLoadedCallback(data));
 		this.events.on(ApplicationEvents.CART_CONTENT_CHANGED, (data: { total: number }) => this.cartContentChangedCallback(data));
-		this.events.on(ApplicationEvents.MODAL_OPENED,  () => this.modalOpenedCallback());
+		this.events.on(ApplicationEvents.MODAL_OPENED, () => this.modalOpenedCallback());
 		this.events.on(ApplicationEvents.MODAL_CLOSED, () => this.modalClosedCallback());
 	}
 
@@ -42,19 +32,19 @@ export class MainPagePresenter extends Presenter {
 			});
 	}
 
-	catalogItemsLoadedCallback(data: Product[]): void {
+	private catalogItemsLoadedCallback(data: Product[]): void {
 		this.mainPageView.render({items: data});
 	}
 
-	cartContentChangedCallback(data: { total: number }): void {
+	private cartContentChangedCallback(data: { total: number }): void {
 		this.mainPageView.render({totalInCart: data.total});
 	}
 
-	modalOpenedCallback() {
+	private modalOpenedCallback() {
 		this.mainPageView.lock = true;
 	}
 
-	modalClosedCallback() {
+	private modalClosedCallback() {
 		this.mainPageView.lock = false;
 	}
 

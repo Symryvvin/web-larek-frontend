@@ -22,6 +22,7 @@ export class CartModel implements ICartModel {
 
 	clear(): void {
 		this._items = [];
+		this.events.emit(ApplicationEvents.CART_CONTENT_CHANGED, {total: this.items.length});
 	}
 
 	removeItemById(id: ProductId): void {
