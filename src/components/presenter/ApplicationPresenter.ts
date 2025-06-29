@@ -16,6 +16,10 @@ export class ApplicationPresenter extends Presenter {
 	            protected readonly orderForm: IForm,
 	) {
 		super(api, events);
+
+		this.orderForm.onSubmit = () =>
+			this.events.emit(ApplicationEvents.ORDER_PAYMENT_SELECTED, this.orderForm.getFormData());
+		this.orderForm.validate();
 	}
 
 	init(): void {
@@ -41,28 +45,19 @@ export class ApplicationPresenter extends Presenter {
 		});
 
 		this.events.on(ApplicationEvents.ORDER_FORMED, (order: Partial<Order>) => {
-			this.modal.close();
-
 			this.order = order as Order;
-
-			this.orderForm.onSubmit =
-				() => this.events.emit(ApplicationEvents.ORDER_PAYMENT_SELECTED, this.orderForm.getFormData());
-			this.orderForm.validate();
-
 			this.openModal(this.orderForm.render());
 		});
 
 		this.events.on(ApplicationEvents.ORDER_PAYMENT_SELECTED, (order: Partial<Order>) => {
-			this.modal.close();
-
 			this.order = Object.assign(this.order, order);
-
 			// this.openModal(this.orderForm.render());
 			console.log(this.order);
 		});
 	}
 
 	openModal(content: HTMLElement): void {
+		this.modal.close();
 		this.modal.content = content;
 		this.modal.open();
 	}
