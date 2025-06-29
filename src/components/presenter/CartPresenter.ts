@@ -22,25 +22,20 @@ export class CartPresenter extends Presenter {
 
 	init(): void {
 		this.events.on(ApplicationEvents.CART_CONTENT_CHANGED, () => {
-			this.cartView.render({items: this.cartModel.items, totalPrice: this.cartModel.getTotalPrice()});
+			this.cartView.render({
+				items: this.cartModel.items
+			});
 		});
 
 		this.events.on(ApplicationEvents.CART_ITEM_DELETED, (data: { id: ProductId }) => {
 			this.cartModel.removeItemById(data.id);
-			this.events.emit(ApplicationEvents.CART_CONTENT_CHANGED, this.cartModel.items);
-		});
-
-		this.events.on(ApplicationEvents.ORDER_CREATED, () => {
-			const productIds = this.cartModel.items.map(item => item.id);
-			const totalPrice = this.cartModel.getTotalPrice();
-
-			this.events.emit(ApplicationEvents.ORDER_FORMED, {items: productIds, total: totalPrice});
+			this.events.emit(ApplicationEvents.CART_CONTENT_CHANGED, {total: this.cartModel.items.length});
 		});
 	}
 
 	addProductToCart(product: Product): void {
 		this.cartModel.addItem(product);
-		this.events.emit(ApplicationEvents.CART_CONTENT_CHANGED, this.cartModel.items);
+		this.events.emit(ApplicationEvents.CART_CONTENT_CHANGED, {total: this.cartModel.items.length});
 	}
 
 	isProductInCart(id: ProductId): boolean {

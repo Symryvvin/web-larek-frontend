@@ -36,8 +36,8 @@ export class MainPagePresenter extends Presenter {
 			this.mainPageView.render({items: data});
 		});
 
-		this.events.on(ApplicationEvents.CART_CONTENT_CHANGED, (data: Product[]) => {
-			this.mainPageView.render({totalInCart: data.length});
+		this.events.on(ApplicationEvents.CART_CONTENT_CHANGED, (data: {total: number}) => {
+			this.mainPageView.render({totalInCart: data.total});
 		});
 	}
 

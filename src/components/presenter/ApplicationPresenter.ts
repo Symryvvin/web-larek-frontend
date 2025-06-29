@@ -44,8 +44,8 @@ export class ApplicationPresenter extends Presenter {
 			this.openModal(this.cartPresenter.renderCart());
 		});
 
-		this.events.on(ApplicationEvents.ORDER_FORMED, (order: Partial<Order>) => {
-			this.order = order as Order;
+		this.events.on(ApplicationEvents.ORDER_CREATED, (data: { items: ProductId[], total: number }) => {
+			this.order = data as Order;
 			this.openModal(this.orderForm.render());
 		});
 

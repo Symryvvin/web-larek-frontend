@@ -1,13 +1,8 @@
 import { Component } from "../base/Component";
-import { ApplicationEvents, Product } from "../../types";
+import { ApplicationEvents, Product, TCartProducts } from "../../types";
 import { IEvents } from "../base/events";
 import { CardInCart } from "./Card";
 import { cloneTemplate, ensureElement } from "../../utils/utils";
-
-type TCartProducts = {
-	items: Product[];
-	totalPrice: number;
-}
 
 export class CartView extends Component<TCartProducts> {
 	protected _cards: HTMLElement[];
@@ -23,10 +18,6 @@ export class CartView extends Component<TCartProducts> {
 		this.itemListElement = ensureElement<HTMLUListElement>('.basket__list', this.container);
 		this.totalPriceElement = ensureElement<HTMLSpanElement>('.basket__price', this.container);
 		this.cartButton = ensureElement<HTMLButtonElement>('.basket__button', this.container);
-
-		this.cartButton.addEventListener("click", () => {
-			this.events.emit(ApplicationEvents.ORDER_CREATED);
-		})
 	}
 
 	set items(items: Product[]) {
@@ -37,11 +28,16 @@ export class CartView extends Component<TCartProducts> {
 			return card.render(item);
 		});
 
-		this.itemListElement.replaceChildren(...this._cards);
-	}
+		const totalPrice = items.reduce((total, item) => total + item.price, 0);
 
-	set totalPrice(total: number) {
-		this.totalPriceElement.textContent = total.toString();
+		this.itemListElement.replaceChildren(...this._cards);
+		this.totalPriceElement.textContent = totalPrice.toString();
+
+		this.cartButton.onclick = () =>
+			this.events.emit(ApplicationEvents.ORDER_CREATED, {
+				items: items.map(item => item.id),
+				total: totalPrice
+			});
 	}
 
 	get content(): HTMLElement {

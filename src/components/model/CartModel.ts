@@ -8,10 +8,6 @@ export class CartModel implements ICartModel {
 		this._items = [];
 	}
 
-	getTotalPrice(): number {
-		return this._items.reduce((total, item) => total + item.price, 0);
-	}
-
 	addItem(item: Product): void {
 		if (!this.itemInCart(item.id)) {
 			this._items.push(item);

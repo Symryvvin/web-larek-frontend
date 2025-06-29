@@ -29,11 +29,14 @@ export interface ICatalogModel {
 
 export interface ICartModel {
 	items: Product[];
-	getTotalPrice: () => number;
 	addItem: (item: Product) => void;
 	itemInCart: (id: ProductId) => boolean;
 	removeItemById: (id: ProductId) => void;
 	clear: () => void;
+}
+
+export type TCartProducts = {
+	items: Product[];
 }
 
 export type TFormValidationError = string | undefined;
