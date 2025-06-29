@@ -28,11 +28,6 @@ export class ApplicationPresenter extends Presenter {
 			this.openModal(this.mainPagePresenter.renderCardPreview(data.id, inCart));
 		});
 
-		this.events.on(ApplicationEvents.CART_ITEM_ADDED, (data: { id: ProductId }) => {
-			const product = this.mainPagePresenter.findCatalogItemById(data.id);
-			this.cartPresenter.addProductToCart(product);
-		});
-
 		this.events.on(ApplicationEvents.CART_CONTENT_CHANGED, () => {
 			const renderedCardPreviewId = this.mainPagePresenter.currentCardPreviewId();
 			const inCart = this.cartPresenter.isProductInCart(renderedCardPreviewId);
