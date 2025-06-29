@@ -8,7 +8,7 @@ import { ApplicationPresenter } from "./components/presenter/ApplicationPresente
 import { CartPresenter } from "./components/presenter/CartPresenter";
 import { Modal } from "./components/view/Modal";
 import { ApplicationElements } from "./components/Elements";
-import { OrderForm } from "./components/view/Form";
+import { ContactsForm, OrderForm } from "./components/view/Form";
 import { cloneTemplate } from "./utils/utils";
 
 const api = new ApplicationApi(new Api(API_URL));
@@ -32,7 +32,8 @@ cartPresenter.init();
 
 const modal = new Modal(ApplicationElements.modal, events);
 const orderForm = new OrderForm(cloneTemplate(ApplicationElements.orderFormTemplate));
-new ApplicationPresenter(api, events, catalogPresenter, cartPresenter, modal, orderForm)
+const contactsForm = new ContactsForm(cloneTemplate(ApplicationElements.contactsFormTemplate));
+new ApplicationPresenter(api, events, catalogPresenter, cartPresenter, modal, orderForm, contactsForm)
 	.init();
 
 

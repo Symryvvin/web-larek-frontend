@@ -133,3 +133,38 @@ export class OrderForm extends Form<Order> {
 	}
 
 }
+
+export class ContactsForm extends Form<Order> {
+	protected emailInput: HTMLInputElement;
+	protected phoneInput: HTMLInputElement;
+
+	constructor(container: HTMLElement) {
+		super(container);
+
+		this.emailInput = ensureElement<HTMLInputElement>('.form__input[name=\'email\']', this.container);
+		this.emailInput.addEventListener('input', (event: InputEvent) => {
+			event.preventDefault();
+			this.validate();
+		})
+		this.phoneInput = ensureElement<HTMLInputElement>('.form__input[name=\'phone\']', this.container);
+		this.phoneInput.addEventListener('input', (event: InputEvent) => {
+			event.preventDefault();
+			this.validate();
+		})
+	}
+
+	validate(): void {
+		this.errors = [
+			this.validateInput(this.emailInput),
+			this.validateInput(this.phoneInput)
+		];
+	}
+
+	getFormData(): Partial<Order> {
+		return {
+			email: this.emailInput.value,
+			phone: this.phoneInput.value
+		};
+	}
+
+}
