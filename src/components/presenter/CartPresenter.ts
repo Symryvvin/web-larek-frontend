@@ -21,27 +21,26 @@ export class CartPresenter extends Presenter {
 	}
 
 	init(): void {
-		this.events.on(ApplicationEvents.CART_CONTENT_CHANGED, () => {
-			this.cartView.render({
-				items: this.cartModel.items
+		this.events.on(ApplicationEvents.CART_CONTENT_CHANGED, () => this.cartContentChangedCallback());
+		this.events.on(ApplicationEvents.CART_ITEM_ADDED, (data: { id: ProductId }) => this.cartItemAddedCallback(data));
+		this.events.on(ApplicationEvents.CART_ITEM_DELETED, (data: { id: ProductId }) => this.cartItemDeletedCallback(data));
+	}
+
+	cartContentChangedCallback(): void {
+		this.cartView.render({items: this.cartModel.items});
+	}
+
+	cartItemAddedCallback(data: { id: ProductId }): void {
+		this.api.getProduct(data.id).then((product: Product) => {
+			this.cartModel.addItem(product);
+		})
+			.catch(error => {
+				console.log(error)
 			});
-		});
+	}
 
-		this.events.on(ApplicationEvents.CART_ITEM_ADDED, (data: { id: ProductId }) => {
-			this.api.getProduct(data.id).then((product: Product) => {
-				this.cartModel.addItem(product);
-				this.events.emit(ApplicationEvents.CART_CONTENT_CHANGED, {total: this.cartModel.items.length});
-			})
-				.catch(error => {
-					console.log(error)
-				});
-
-		});
-
-		this.events.on(ApplicationEvents.CART_ITEM_DELETED, (data: { id: ProductId }) => {
-			this.cartModel.removeItemById(data.id);
-			this.events.emit(ApplicationEvents.CART_CONTENT_CHANGED, {total: this.cartModel.items.length});
-		});
+	cartItemDeletedCallback(data: { id: ProductId }): void {
+		this.cartModel.removeItemById(data.id);
 	}
 
 	isProductInCart(id: ProductId): boolean {

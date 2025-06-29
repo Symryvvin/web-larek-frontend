@@ -230,7 +230,6 @@ yarn build
 * `cartModel: ICartModel` - модель корзины.
 * `cartContainer: CartView` - html контейнер корзины.
 Методы класса:
-* `addProductToCart(product: Product): void` - добавляет в модель корзины товар.
 * `isProductInCart(id: ProductId): boolean` - возвращает флаг, определяющий наличие товара в корзине по идентификатору.
 * `renderCart(): HTMLElement` - возвращает готовый html-content корзины.
 
@@ -242,7 +241,6 @@ yarn build
 Методы класса:
 * `renderCardPreview(productId: ProductId, inCart: boolean): HTMLElement` - отрисовать расширенное представление карточки товара по переданному идентификатору товара и флагу, определяющему есть ли товар в корзине.
 * `currentCardPreviewId(): ProductId` - вернуть идентификатор товара, который в данный момент отображается в модальном окне.
-* `findCatalogItemById(id: ProductId): Product` - вернуть товар по идентификатору из модели, к которой у presenter'а есть доступ.
 
 ## Пользовательские сценарии
 
@@ -313,6 +311,5 @@ yarn build
 * **'cart:item_deleted'** - товар удален из корзины.
 * **'cart:content_changed'** - изменено содержимое корзины.
 * **'order:created'** - заказ создан.
-* **'order:formed'** - заказ сформирован.
 * **'order:payment_selected'** - выбран способ оплаты заказа.
 * **'order:placed'** - заказ оформлен.

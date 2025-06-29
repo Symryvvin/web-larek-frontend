@@ -34,3 +34,10 @@ const modal = new Modal(ApplicationElements.modal);
 const orderForm = new OrderForm(cloneTemplate(ApplicationElements.orderFormTemplate));
 new ApplicationPresenter(api, events, catalogPresenter, cartPresenter, modal, orderForm)
 	.init();
+
+
+// enable debug add application events
+const eventEmitter = events as EventEmitter;
+eventEmitter.onAll((data: object) => {
+	console.debug(data);
+})

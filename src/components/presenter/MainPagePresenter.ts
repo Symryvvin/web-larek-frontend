@@ -25,21 +25,29 @@ export class MainPagePresenter extends Presenter {
 	}
 
 	init(): void {
+		this.loadItems();
+
+		this.events.on(ApplicationEvents.CATALOG_ITEMS_LOADED, (data: Product[]) => this.catalogItemsLoadedCallback(data));
+		this.events.on(ApplicationEvents.CART_CONTENT_CHANGED, (data: { total: number }) => this.cartContentChangedCallback(data));
+	}
+
+	loadItems(): void {
 		this.api.getProducts().then(data => {
 			this.catalogModel.items = data.items;
 		})
 			.catch(error => {
 				console.log(error)
 			});
-
-		this.events.on(ApplicationEvents.CATALOG_ITEMS_LOADED, (data: Product[]) => {
-			this.mainPageView.render({items: data});
-		});
-
-		this.events.on(ApplicationEvents.CART_CONTENT_CHANGED, (data: {total: number}) => {
-			this.mainPageView.render({totalInCart: data.total});
-		});
 	}
+
+	catalogItemsLoadedCallback(data: Product[]): void {
+		this.mainPageView.render({items: data});
+	}
+
+	cartContentChangedCallback(data: { total: number }): void {
+		this.mainPageView.render({totalInCart: data.total});
+	}
+
 
 	renderCardPreview(productId: ProductId, inCart: boolean): HTMLElement {
 		this.cardPreview.inCart = inCart;
@@ -48,10 +56,6 @@ export class MainPagePresenter extends Presenter {
 
 	currentCardPreviewId(): ProductId {
 		return this.cardPreview.id;
-	}
-
-	findCatalogItemById(id: ProductId): Product {
-		return this.catalogModel.getItemById(id);
 	}
 
 	//TODO блокировать страницу с .page__wrapper_locked

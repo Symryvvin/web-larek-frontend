@@ -23,32 +23,36 @@ export class ApplicationPresenter extends Presenter {
 	}
 
 	init(): void {
-		this.events.on(ApplicationEvents.CATALOG_CARD_SELECTED, (data: { id: ProductId }) => {
-			const inCart = this.cartPresenter.isProductInCart(data.id);
-			this.openModal(this.mainPagePresenter.renderCardPreview(data.id, inCart));
-		});
+		this.events.on(ApplicationEvents.CATALOG_CARD_SELECTED, (data: { id: ProductId }) => this.catalogCardSelectedCallback(data));
+		this.events.on(ApplicationEvents.CART_CONTENT_CHANGED, () => this.cartContentChangedCallback());
+		this.events.on(ApplicationEvents.CART_OPENED, () => this.cartOpenedCallback());
+		this.events.on(ApplicationEvents.ORDER_CREATED, (data: { items: ProductId[], total: number }) => this.orderCreatedCallback(data));
+		this.events.on(ApplicationEvents.ORDER_PAYMENT_SELECTED, (order: Partial<Order>) => this.orderFormedCallback(order));
+	}
 
-		this.events.on(ApplicationEvents.CART_CONTENT_CHANGED, () => {
-			const renderedCardPreviewId = this.mainPagePresenter.currentCardPreviewId();
-			const inCart = this.cartPresenter.isProductInCart(renderedCardPreviewId);
+	catalogCardSelectedCallback(data: { id: ProductId }): void {
+		const inCart = this.cartPresenter.isProductInCart(data.id);
+		this.openModal(this.mainPagePresenter.renderCardPreview(data.id, inCart));
+	}
 
-			this.mainPagePresenter.renderCardPreview(renderedCardPreviewId, inCart);
-		});
+	cartContentChangedCallback(): void {
+		const renderedCardPreviewId = this.mainPagePresenter.currentCardPreviewId();
+		const inCart = this.cartPresenter.isProductInCart(renderedCardPreviewId);
 
-		this.events.on(ApplicationEvents.CART_OPENED, () => {
-			this.openModal(this.cartPresenter.renderCart());
-		});
+		this.mainPagePresenter.renderCardPreview(renderedCardPreviewId, inCart);
+	}
 
-		this.events.on(ApplicationEvents.ORDER_CREATED, (data: { items: ProductId[], total: number }) => {
-			this.order = data as Order;
-			this.openModal(this.orderForm.render());
-		});
+	cartOpenedCallback() {
+		this.openModal(this.cartPresenter.renderCart());
+	}
 
-		this.events.on(ApplicationEvents.ORDER_PAYMENT_SELECTED, (order: Partial<Order>) => {
-			this.order = Object.assign(this.order, order);
-			// this.openModal(this.orderForm.render());
-			console.log(this.order);
-		});
+	orderCreatedCallback(data: { items: ProductId[], total: number }) {
+		this.order = data as Order;
+		this.openModal(this.orderForm.render());
+	}
+
+	orderFormedCallback(order: Partial<Order>) {
+		this.order = Object.assign(this.order, order);
 	}
 
 	openModal(content: HTMLElement): void {

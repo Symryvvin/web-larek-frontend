@@ -1,4 +1,4 @@
-import { ICartModel, Product, ProductId } from "../../types";
+import { ApplicationEvents, ICartModel, Product, ProductId } from "../../types";
 import { IEvents } from "../base/events";
 
 export class CartModel implements ICartModel {
@@ -11,6 +11,7 @@ export class CartModel implements ICartModel {
 	addItem(item: Product): void {
 		if (!this.itemInCart(item.id)) {
 			this._items.push(item);
+			this.events.emit(ApplicationEvents.CART_CONTENT_CHANGED, {total: this.items.length});
 		}
 	}
 
@@ -25,6 +26,7 @@ export class CartModel implements ICartModel {
 
 	removeItemById(id: ProductId): void {
 		this._items = this._items.filter((item: Product) => item.id !== id);
+		this.events.emit(ApplicationEvents.CART_CONTENT_CHANGED, {total: this.items.length});
 	}
 
 	get items(): Product[] {
