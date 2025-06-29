@@ -1,4 +1,4 @@
-import { MainPagePresenter } from "./MainPagePresenter";
+import { PagePresenter } from "./PagePresenter";
 import { Presenter } from "../base/Presenter";
 import { ApplicationApi } from "../ApplicationApi";
 import { IEvents } from "../base/events";
@@ -11,7 +11,7 @@ export class ApplicationPresenter extends Presenter {
 
 	constructor(protected readonly api: ApplicationApi,
 	            protected readonly events: IEvents,
-	            protected readonly mainPagePresenter: MainPagePresenter,
+	            protected readonly mainPagePresenter: PagePresenter,
 	            protected readonly cartPresenter: CartPresenter,
 	            protected readonly modal: IModal,
 	            protected readonly orderForm: IForm,

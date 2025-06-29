@@ -9,7 +9,7 @@ type TMainPage = {
 	totalInCart: number;
 }
 
-export class MainPageView extends Component<TMainPage> {
+export class PageView extends Component<TMainPage> {
 	protected _cards: HTMLElement[];
 	protected galleryElement: HTMLElement;
 	protected cartButton: HTMLButtonElement;

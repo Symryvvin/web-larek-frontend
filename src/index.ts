@@ -3,7 +3,7 @@ import { ApplicationApi } from './components/ApplicationApi';
 import { Api } from './components/base/api';
 import { API_URL } from './utils/constants';
 import { EventEmitter } from './components/base/events';
-import { MainPagePresenter } from "./components/presenter/MainPagePresenter";
+import { PagePresenter } from "./components/presenter/PagePresenter";
 import { ApplicationPresenter } from "./components/presenter/ApplicationPresenter";
 import { CartPresenter } from "./components/presenter/CartPresenter";
 import { Modal } from "./components/view/Modal";
@@ -11,7 +11,7 @@ import { ApplicationElements } from "./components/Elements";
 import { ContactsForm, OrderForm } from "./components/view/Form";
 import { cloneTemplate } from "./utils/utils";
 import { OrderSuccessView } from "./components/view/OrderSuccessView";
-import { MainPageView } from "./components/view/MainPageView";
+import { PageView } from "./components/view/PageView";
 import { CardPreview } from "./components/view/Card";
 import { CatalogModel } from "./components/model/CatalogModel";
 import { CartModel } from "./components/model/CartModel";
@@ -20,10 +20,10 @@ import { CartView } from "./components/view/CartView";
 const api = new ApplicationApi(new Api(API_URL));
 const events = new EventEmitter();
 
-const pageView = new MainPageView(ApplicationElements.page, ApplicationElements.cardTemplate, events);
+const pageView = new PageView(ApplicationElements.page, ApplicationElements.cardTemplate, events);
 const cardPreview = new CardPreview(cloneTemplate(ApplicationElements.cardPreviewTemplate), events);
 const catalogModel = new CatalogModel(events);
-const catalogPresenter = new MainPagePresenter(api, events, catalogModel, pageView, cardPreview,);
+const catalogPresenter = new PagePresenter(api, events, catalogModel, pageView, cardPreview,);
 catalogPresenter.init();
 
 

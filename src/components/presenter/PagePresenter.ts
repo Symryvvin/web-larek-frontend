@@ -1,15 +1,15 @@
 import { ApplicationEvents, ICatalogModel, Product, ProductId } from "../../types";
 import { CardPreview } from "../view/Card";
 import { Presenter } from "../base/Presenter";
-import { MainPageView } from "../view/MainPageView";
+import { PageView } from "../view/PageView";
 import { ApplicationApi } from "../ApplicationApi";
 import { IEvents } from "../base/events";
 
-export class MainPagePresenter extends Presenter {
+export class PagePresenter extends Presenter {
 	constructor(protected readonly api: ApplicationApi,
 	            protected readonly events: IEvents,
 	            protected readonly catalogModel: ICatalogModel,
-	            protected readonly mainPageView: MainPageView,
+	            protected readonly mainPageView: PageView,
 	            protected readonly cardPreview: CardPreview) {
 		super(api, events);
 	}
