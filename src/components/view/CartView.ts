@@ -18,6 +18,8 @@ export class CartView extends Component<TCartProducts> {
 		this.itemListElement = ensureElement<HTMLUListElement>('.basket__list', this.container);
 		this.totalPriceElement = ensureElement<HTMLSpanElement>('.basket__price', this.container);
 		this.cartButton = ensureElement<HTMLButtonElement>('.basket__button', this.container);
+
+		this.setDisabled(this.cartButton, true);
 	}
 
 	set items(items: Product[]) {
@@ -27,17 +29,17 @@ export class CartView extends Component<TCartProducts> {
 			card.index = index++;
 			return card.render(item);
 		});
+		this.itemListElement.replaceChildren(...this._cards);
 
 		const totalPrice = items.reduce((total, item) => total + item.price, 0);
-
-		this.itemListElement.replaceChildren(...this._cards);
-		this.totalPriceElement.textContent = totalPrice.toString();
+		this.setText(this.totalPriceElement, totalPrice);
 
 		this.cartButton.onclick = () =>
 			this.events.emit(ApplicationEvents.ORDER_CREATED, {
 				items: items.map(item => item.id),
 				total: totalPrice
 			});
+		this.setDisabled(this.cartButton, this._cards.length === 0);
 	}
 
 	get content(): HTMLElement {

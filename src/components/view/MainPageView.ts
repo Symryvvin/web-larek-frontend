@@ -40,15 +40,15 @@ export class MainPageView extends Component<TMainPage> {
 		this.galleryElement.replaceChildren(...this._cards);
 	}
 
-	set totalInCart(totalInCart: number) {
-		this.cartItemsCount.textContent = totalInCart.toString();
+	set totalInCart(value: number) {
+		this.setText(this.cartItemsCount, value);
 	}
 
 	set lock(lock: boolean) {
 		if (lock) {
-			this.pageWrapperElement.classList.add('page__wrapper_locked');
+			this.toggleClass(this.pageWrapperElement, 'page__wrapper_locked' ,true);
 		} else {
-			this.pageWrapperElement.classList.remove('page__wrapper_locked');
+			this.toggleClass(this.pageWrapperElement, 'page__wrapper_locked' ,false);
 		}
 	}
 

@@ -44,8 +44,8 @@ export abstract class Form<T> extends Component<T> implements IForm {
 		const errMessage = errors.filter(err => err !== undefined)
 			.join(', ');
 
-		this.submitButton.disabled = !isValid;
-		this.formValidationErrorsElement.textContent = isValid ? '' : errMessage;
+		this.setDisabled(this.submitButton, !isValid);
+		this.setText(this.formValidationErrorsElement, isValid ? '' : errMessage);
 	}
 
 }

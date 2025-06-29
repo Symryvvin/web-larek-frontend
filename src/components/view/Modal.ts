@@ -29,13 +29,13 @@ export class Modal extends Component<ModalContent> implements IModal {
 	}
 
 	close(): void {
-		this.container.classList.remove('modal_active');
+		this.toggleClass(this.container, 'modal_active', false);
 		this._content.replaceChildren('');
 		this.events.emit(ApplicationEvents.MODAL_CLOSED);
 	}
 
 	open(): void {
-		this.container.classList.add('modal_active');
+		this.toggleClass(this.container, 'modal_active', true);
 		this.events.emit(ApplicationEvents.MODAL_OPENED);
 	}
 

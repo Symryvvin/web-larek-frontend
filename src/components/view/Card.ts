@@ -25,12 +25,12 @@ abstract class Card extends Component<Product> {
 		return this._productId;
 	}
 
-	set title(title: string) {
-		this.titleElement.textContent = title;
+	set title(value: string) {
+		this.setText(this.titleElement, value);
 	}
 
-	set price(title: string) {
-		this.priceElement.textContent = title;
+	set price(value: string) {
+		this.setText(this.priceElement, value === null ? 'Бесплатно' : value);
 	}
 
 }
@@ -48,8 +48,8 @@ abstract class GalleryCard extends Card {
 		this.imageElement = ensureElement<HTMLImageElement>('.card__image', this.container);
 	}
 
-	set category(title: string) {
-		this.categoryElement.textContent = title;
+	set category(value: string) {
+		this.setText(this.categoryElement, value);
 	}
 
 	set image(src: string) {
@@ -102,16 +102,16 @@ export class CardPreview extends GalleryCard {
 	}
 
 	private setButtonText() {
-		this.cardButton.textContent = this._inCart ? CardPreviewButtonText.IN_CART : CardPreviewButtonText.ADD_TO_CARD;
+		this.setText(this.cardButton, this._inCart ? CardPreviewButtonText.IN_CART : CardPreviewButtonText.ADD_TO_CARD);
 	}
 
-	set inCart(inCart: boolean) {
-		this._inCart = inCart;
+	set inCart(value: boolean) {
+		this._inCart = value;
 		this.setButtonText();
 	}
 
-	set description(title: string) {
-		this.descriptionElement.textContent = title;
+	set description(value: string) {
+		this.setText(this.descriptionElement, value);
 	}
 }
 
@@ -130,12 +130,8 @@ export class CardInCart extends Card {
 		});
 	}
 
-	set index(index: number) {
-		this.indexElement.textContent = index.toString();
-	}
-
-	set price(title: string) {
-		this.priceElement.textContent = title;
+	set index(value: number) {
+		this.setText(this.indexElement, value);
 	}
 
 }
