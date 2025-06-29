@@ -1,6 +1,6 @@
 import { Component } from "../base/Component";
 import { IForm, Order, PaymentMethod, TFormValidationError } from "../../types";
-import { ensureAllElements, ensureElement } from "../../utils/utils";
+import { ensureAllElements, ensureElement, formatPhone } from "../../utils/utils";
 
 export abstract class Form<T> extends Component<T> implements IForm {
 	protected formValidationErrorsElement: HTMLSpanElement;
@@ -20,12 +20,13 @@ export abstract class Form<T> extends Component<T> implements IForm {
 	}
 
 	protected validateInput(input: HTMLInputElement): TFormValidationError {
-		if (!input.validity.valid) {
-			if (input.dataset.errorMessage) {
-				return input.dataset.errorMessage;
-			}
+		const inputLabel = ensureElement<HTMLSpanElement>('.form__label', input.parentNode as HTMLElement);
+		if (input.validity.patternMismatch) {
+			input.setCustomValidity(input.dataset.errorMessage);
+		}
 
-			return input.validationMessage;
+		if (!input.validity.valid) {
+			return `${inputLabel.textContent}: ${input.validationMessage}`;
 		}
 
 		return undefined;
@@ -42,7 +43,7 @@ export abstract class Form<T> extends Component<T> implements IForm {
 	set errors(errors: TFormValidationError[]) {
 		const isValid = errors.every(error => error === undefined);
 		const errMessage = errors.filter(err => err !== undefined)
-			.join(', ');
+			.join(' ');
 
 		this.setDisabled(this.submitButton, !isValid);
 		this.setText(this.formValidationErrorsElement, isValid ? '' : errMessage);
@@ -149,8 +150,10 @@ export class ContactsForm extends Form<Order> {
 		this.phoneInput = ensureElement<HTMLInputElement>('.form__input[name=\'phone\']', this.container);
 		this.phoneInput.addEventListener('input', (event: InputEvent) => {
 			event.preventDefault();
+			this.phoneInput.value = formatPhone(this.phoneInput.value);
 			this.validate();
 		})
+		this.phoneInput.value = formatPhone(this.phoneInput.value);
 	}
 
 	validate(): void {

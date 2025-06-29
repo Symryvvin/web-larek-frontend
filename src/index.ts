@@ -26,7 +26,6 @@ const catalogModel = new CatalogModel(events);
 const catalogPresenter = new PagePresenter(api, events, catalogModel, pageView, cardPreview,);
 catalogPresenter.init();
 
-
 const cartModel = new CartModel(events);
 const cartView = new CartView(cloneTemplate(ApplicationElements.cartTemplate), ApplicationElements.cardInCartTemplate, events);
 const cartPresenter = new CartPresenter(api, events, cartModel, cartView);
@@ -43,4 +42,4 @@ new ApplicationPresenter(api, events, catalogPresenter, cartPresenter, modal, or
 const eventEmitter = events as EventEmitter;
 eventEmitter.onAll((data: object) => {
 	console.debug(data);
-})
+});
