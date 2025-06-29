@@ -1,7 +1,7 @@
 import { Component } from "../base/Component";
 import { ApplicationEvents, Product } from "../../types";
 import { cloneTemplate, ensureElement } from "../../utils/utils";
-import { Card } from "./Card";
+import { CatalogCard } from "./Card";
 import { IEvents } from "../base/events";
 
 type TMainPage = {
@@ -34,7 +34,7 @@ export class MainPageView extends Component<TMainPage> {
 
 	set items(items: Product[]) {
 		this._cards = items.map(item => {
-			return new Card(cloneTemplate(this.cardTemplate), this.events).render(item);
+			return new CatalogCard(cloneTemplate(this.cardTemplate), this.events).render(item);
 		});
 
 		this.galleryElement.replaceChildren(...this._cards);
@@ -46,9 +46,7 @@ export class MainPageView extends Component<TMainPage> {
 
 	set lock(lock: boolean) {
 		if (lock) {
-			console.log(this.pageWrapperElement.classList);
 			this.pageWrapperElement.classList.add('page__wrapper_locked');
-			console.log(this.pageWrapperElement.classList);
 		} else {
 			this.pageWrapperElement.classList.remove('page__wrapper_locked');
 		}
