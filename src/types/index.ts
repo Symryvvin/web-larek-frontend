@@ -33,10 +33,12 @@ export interface ICartModel {
 	itemInCart: (id: ProductId) => boolean;
 	removeItemById: (id: ProductId) => void;
 	clear: () => void;
+	getTotalPrice: () => number;
 }
 
 export type TCartProducts = {
 	items: Product[];
+	totalPrice: number;
 }
 
 export type TOrderSuccessful = {
@@ -71,6 +73,7 @@ export enum ApplicationEvents {
 	CART_ITEM_ADDED = 'cart:item_added',
 	CART_ITEM_DELETED = 'cart:item_deleted',
 	CART_CONTENT_CHANGED = 'cart:content_changed',
+	CART_ORDER_SUBMITTED = 'cart:order_submitted',
 	ORDER_CREATED = 'order:created',
 	ORDER_PAYMENT_SELECTED = 'order:payment_selected',
 	ORDER_PLACED = 'order:placed',

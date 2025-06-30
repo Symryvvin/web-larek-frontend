@@ -16,10 +16,11 @@ export class CartPresenter extends Presenter {
 		this.events.on(ApplicationEvents.CART_CONTENT_CHANGED, () => this.cartContentChangedCallback());
 		this.events.on(ApplicationEvents.CART_ITEM_ADDED, (data: { id: ProductId }) => this.cartItemAddedCallback(data));
 		this.events.on(ApplicationEvents.CART_ITEM_DELETED, (data: { id: ProductId }) => this.cartItemDeletedCallback(data));
+		this.events.on(ApplicationEvents.CART_ORDER_SUBMITTED, () => this.cardOrderSubmittedCallback());
 	}
 
 	private cartContentChangedCallback(): void {
-		this.cartView.render({items: this.cartModel.items});
+		this.cartView.render({items: this.cartModel.items, totalPrice: this.cartModel.getTotalPrice()});
 	}
 
 	private cartItemAddedCallback(data: { id: ProductId }): void {
@@ -35,12 +36,19 @@ export class CartPresenter extends Presenter {
 		this.cartModel.removeItemById(data.id);
 	}
 
+	private cardOrderSubmittedCallback() {
+		this.events.emit(ApplicationEvents.ORDER_CREATED, {
+			items: this.cartModel.items.map((product: Product) => product.id),
+			total: this.cartModel.getTotalPrice()
+		});
+	}
+
 	isProductInCart(id: ProductId): boolean {
 		return this.cartModel.itemInCart(id);
 	}
 
 	renderCart(): HTMLElement {
-		return this.cartView.content;
+		return this.cartView.render();
 	}
 
 	clearCart() {

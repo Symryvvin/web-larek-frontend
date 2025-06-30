@@ -18,6 +18,10 @@ export class CartView extends Component<TCartProducts> {
 		this.itemListElement = ensureElement<HTMLUListElement>('.basket__list', this.container);
 		this.totalPriceElement = ensureElement<HTMLSpanElement>('.basket__price', this.container);
 		this.cartButton = ensureElement<HTMLButtonElement>('.basket__button', this.container);
+		this.cartButton.addEventListener('click', (event: UIEvent) => {
+			event.preventDefault()
+			this.events.emit(ApplicationEvents.CART_ORDER_SUBMITTED)
+		});
 
 		this.setDisabled(this.cartButton, true);
 	}
@@ -30,20 +34,11 @@ export class CartView extends Component<TCartProducts> {
 			return card.render(item);
 		});
 		this.itemListElement.replaceChildren(...this._cards);
-
-		const totalPrice = items.reduce((total, item) => total + item.price, 0);
-		this.setText(this.totalPriceElement, totalPrice);
-
-		this.cartButton.onclick = () =>
-			this.events.emit(ApplicationEvents.ORDER_CREATED, {
-				items: items.map(item => item.id),
-				total: totalPrice
-			});
 		this.setDisabled(this.cartButton, this._cards.length === 0);
 	}
 
-	get content(): HTMLElement {
-		return this.container;
+	set totalPrice(value: number) {
+		this.setText(this.totalPriceElement, value);
 	}
 
 }

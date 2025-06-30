@@ -13,7 +13,7 @@ export abstract class Form<T> extends Component<T> implements IForm {
 
 		this.formValidationErrorsElement = ensureElement<HTMLSpanElement>('.form__errors', this.container);
 		this.submitButton = ensureElement<HTMLButtonElement>('button[type=\'submit\'', this.container);
-		this.submitButton.addEventListener('click', (event: Event) => {
+		this.submitButton.addEventListener('click', (event: SubmitEvent) => {
 			event.preventDefault();
 			this._onSubmit();
 		})
@@ -67,7 +67,7 @@ export class OrderForm extends Form<Order> {
 		})
 
 		this.addressInput = ensureElement<HTMLInputElement>('.form__input[name=\'address\']', this.container);
-		this.addressInput.addEventListener('input', (event: InputEvent) => {
+		this.addressInput.addEventListener('input', (event: UIEvent) => {
 			event.preventDefault();
 			this.validate();
 		})
@@ -143,12 +143,12 @@ export class ContactsForm extends Form<Order> {
 		super(container);
 
 		this.emailInput = ensureElement<HTMLInputElement>('.form__input[name=\'email\']', this.container);
-		this.emailInput.addEventListener('input', (event: InputEvent) => {
+		this.emailInput.addEventListener('input', (event: UIEvent) => {
 			event.preventDefault();
 			this.validate();
 		})
 		this.phoneInput = ensureElement<HTMLInputElement>('.form__input[name=\'phone\']', this.container);
-		this.phoneInput.addEventListener('input', (event: InputEvent) => {
+		this.phoneInput.addEventListener('input', (event: UIEvent) => {
 			event.preventDefault();
 			this.phoneInput.value = formatPhone(this.phoneInput.value);
 			this.validate();

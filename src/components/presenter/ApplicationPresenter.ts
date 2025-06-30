@@ -76,12 +76,11 @@ export class ApplicationPresenter extends Presenter {
 			});
 	}
 
-	//TODO implement order state with modal?
-
 	private openModal(content: HTMLElement): void {
 		this.modal.close();
 		this.modal.content = content;
 		this.modal.open();
 	}
+
 
 }

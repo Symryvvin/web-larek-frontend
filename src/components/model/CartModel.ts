@@ -30,6 +30,10 @@ export class CartModel implements ICartModel {
 		this.events.emit(ApplicationEvents.CART_CONTENT_CHANGED, {total: this.items.length});
 	}
 
+	getTotalPrice(): number {
+		return this._items.reduce((total, item) => total + item.price, 0);
+	}
+
 	get items(): Product[] {
 		return this._items;
 	}
