@@ -68,8 +68,7 @@ export class CatalogCard extends GalleryCard {
 	            protected readonly events: IEvents) {
 		super(container, events);
 
-		this.container.addEventListener('click', (event: MouseEvent) => {
-			event.preventDefault();
+		this.container.addEventListener('click', () => {
 			events.emit(ApplicationEvents.CATALOG_CARD_SELECTED, {id: this._productId});
 		});
 	}
@@ -92,8 +91,7 @@ export class CardPreview extends GalleryCard {
 
 		this.descriptionElement = ensureElement<HTMLParagraphElement>('.card__text', this.container);
 		this.cardButton = ensureElement<HTMLButtonElement>('.card__button', this.container);
-		this.cardButton.addEventListener('click', (event: MouseEvent) => {
-			event.preventDefault();
+		this.cardButton.addEventListener('click', () => {
 			const appEventName = this._inCart ? ApplicationEvents.CART_ITEM_DELETED : ApplicationEvents.CART_ITEM_ADDED
 			this.events.emit(appEventName, {id: this._productId});
 		});

@@ -2,9 +2,10 @@ import { PagePresenter } from "./PagePresenter";
 import { Presenter } from "../base/Presenter";
 import { ApplicationApi } from "../ApplicationApi";
 import { IEvents } from "../base/events";
-import { ApplicationEvents, IForm, IModal, Order, ProductId } from "../../types";
+import { ApplicationEvents, IModal, Order, ProductId } from "../../types";
 import { CartPresenter } from "./CartPresenter";
 import { OrderSuccessView } from "../view/OrderSuccessView";
+import { Form } from "../view/Form";
 
 export class ApplicationPresenter extends Presenter {
 	protected order: Order;
@@ -14,16 +15,12 @@ export class ApplicationPresenter extends Presenter {
 	            protected readonly mainPagePresenter: PagePresenter,
 	            protected readonly cartPresenter: CartPresenter,
 	            protected readonly modal: IModal,
-	            protected readonly orderForm: IForm,
-	            protected readonly contactsForm: IForm,
+	            protected readonly orderForm: Form<Order>,
+	            protected readonly contactsForm: Form<Order>,
 	            protected readonly orderSuccessView: OrderSuccessView
 	) {
 		super(api, events);
 
-		this.orderForm.onSubmit = () => this.events.emit(ApplicationEvents.ORDER_PAYMENT_SELECTED, this.orderForm.getFormData());
-		this.orderForm.validate();
-		this.contactsForm.onSubmit = () => this.events.emit(ApplicationEvents.ORDER_PLACED, this.contactsForm.getFormData());
-		this.contactsForm.validate();
 		this.orderSuccessView.onClose = () => {
 			this.modal.close();
 		};

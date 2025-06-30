@@ -48,14 +48,6 @@ export type TOrderSuccessful = {
 
 export type TFormValidationError = string | undefined;
 
-export interface IForm {
-	errors: TFormValidationError[];
-	onSubmit: () => void;
-	validate: () => void;
-	getFormData: () => object;
-	render: (data?: object) => HTMLElement;
-}
-
 export interface IModal {
 	content: HTMLElement;
 	open: () => void;

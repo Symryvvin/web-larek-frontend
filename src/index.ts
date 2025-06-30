@@ -32,8 +32,8 @@ const cartPresenter = new CartPresenter(api, events, cartModel, cartView);
 cartPresenter.init();
 
 const modal = new Modal(ApplicationElements.modal, events);
-const orderForm = new OrderForm(cloneTemplate(ApplicationElements.orderFormTemplate));
-const contactsForm = new ContactsForm(cloneTemplate(ApplicationElements.contactsFormTemplate));
+const orderForm = new OrderForm(cloneTemplate(ApplicationElements.orderFormTemplate), events);
+const contactsForm = new ContactsForm(cloneTemplate(ApplicationElements.contactsFormTemplate), events);
 const orderSuccessView = new OrderSuccessView(cloneTemplate(ApplicationElements.orderSuccessTemplate));
 new ApplicationPresenter(api, events, catalogPresenter, cartPresenter, modal, orderForm, contactsForm, orderSuccessView).init();
 

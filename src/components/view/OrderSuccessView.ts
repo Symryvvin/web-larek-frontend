@@ -13,8 +13,7 @@ export class OrderSuccessView extends Component<TOrderSuccessful> {
 
 		this.messageElement = ensureElement<HTMLParagraphElement>('.order-success__description', this.container);
 		this.closeButton = ensureElement<HTMLButtonElement>('.order-success__close', this.container);
-		this.closeButton.addEventListener('click', (event: InputEvent) => {
-			event.preventDefault();
+		this.closeButton.addEventListener('click', () => {
 			this.setText(this.messageElement, '');
 			this._onClose();
 		})

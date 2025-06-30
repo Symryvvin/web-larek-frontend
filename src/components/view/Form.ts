@@ -1,22 +1,20 @@
 import { Component } from "../base/Component";
-import { IForm, Order, PaymentMethod, TFormValidationError } from "../../types";
+import { ApplicationEvents, Order, PaymentMethod, TFormValidationError } from "../../types";
 import { ensureAllElements, ensureElement, formatPhone } from "../../utils/utils";
+import { IEvents } from "../base/events";
 
-export abstract class Form<T> extends Component<T> implements IForm {
+export abstract class Form<T> extends Component<T> {
 	protected formValidationErrorsElement: HTMLSpanElement;
 	protected submitButton: HTMLButtonElement;
-
-	protected _onSubmit: () => void;
 
 	protected constructor(protected readonly container: HTMLElement) {
 		super(container);
 
 		this.formValidationErrorsElement = ensureElement<HTMLSpanElement>('.form__errors', this.container);
 		this.submitButton = ensureElement<HTMLButtonElement>('button[type=\'submit\'', this.container);
-		this.submitButton.addEventListener('click', (event: SubmitEvent) => {
+		this.submitButton.addEventListener('click', (event: Event) => {
 			event.preventDefault();
-			this._onSubmit();
-		})
+		});
 	}
 
 	protected validateInput(input: HTMLInputElement): TFormValidationError {
@@ -36,10 +34,6 @@ export abstract class Form<T> extends Component<T> implements IForm {
 
 	abstract getFormData(): Partial<T>;
 
-	set onSubmit(onSubmit: () => void) {
-		this._onSubmit = onSubmit;
-	}
-
 	set errors(errors: TFormValidationError[]) {
 		const isValid = errors.every(error => error === undefined);
 		const errMessage = errors.filter(err => err !== undefined)
@@ -55,8 +49,13 @@ export class OrderForm extends Form<Order> {
 	protected paymentButtons: HTMLButtonElement[];
 	protected addressInput: HTMLInputElement;
 
-	constructor(container: HTMLElement) {
+	constructor(protected readonly container: HTMLElement,
+	            protected readonly events: IEvents) {
 		super(container);
+
+		this.submitButton.addEventListener('click', () => {
+			this.events.emit(ApplicationEvents.ORDER_PAYMENT_SELECTED, this.getFormData())
+		});
 
 		this.paymentButtons = ensureAllElements<HTMLButtonElement>('.order__buttons button', this.container);
 		this.paymentButtons.forEach((button: HTMLButtonElement) => {
@@ -64,13 +63,14 @@ export class OrderForm extends Form<Order> {
 				this.switchPaymentMethod(button);
 				this.validate();
 			})
-		})
+		});
 
 		this.addressInput = ensureElement<HTMLInputElement>('.form__input[name=\'address\']', this.container);
-		this.addressInput.addEventListener('input', (event: UIEvent) => {
-			event.preventDefault();
+		this.addressInput.addEventListener('input', () => {
 			this.validate();
-		})
+		});
+
+		this.validate();
 	}
 
 	private switchPaymentMethod(button: HTMLButtonElement): void {
@@ -139,21 +139,27 @@ export class ContactsForm extends Form<Order> {
 	protected emailInput: HTMLInputElement;
 	protected phoneInput: HTMLInputElement;
 
-	constructor(container: HTMLElement) {
+	constructor(protected readonly container: HTMLElement,
+	            protected readonly events: IEvents) {
 		super(container);
 
+		this.submitButton.addEventListener('click', () => {
+			this.events.emit(ApplicationEvents.ORDER_PLACED, this.getFormData())
+		});
+
 		this.emailInput = ensureElement<HTMLInputElement>('.form__input[name=\'email\']', this.container);
-		this.emailInput.addEventListener('input', (event: UIEvent) => {
-			event.preventDefault();
+		this.emailInput.addEventListener('input', () => {
 			this.validate();
-		})
+		});
+
 		this.phoneInput = ensureElement<HTMLInputElement>('.form__input[name=\'phone\']', this.container);
-		this.phoneInput.addEventListener('input', (event: UIEvent) => {
-			event.preventDefault();
+		this.phoneInput.addEventListener('input', () => {
 			this.phoneInput.value = formatPhone(this.phoneInput.value);
 			this.validate();
-		})
+		});
+
 		this.phoneInput.value = formatPhone(this.phoneInput.value);
+		this.validate();
 	}
 
 	validate(): void {

@@ -18,8 +18,7 @@ export class CartView extends Component<TCartProducts> {
 		this.itemListElement = ensureElement<HTMLUListElement>('.basket__list', this.container);
 		this.totalPriceElement = ensureElement<HTMLSpanElement>('.basket__price', this.container);
 		this.cartButton = ensureElement<HTMLButtonElement>('.basket__button', this.container);
-		this.cartButton.addEventListener('click', (event: UIEvent) => {
-			event.preventDefault()
+		this.cartButton.addEventListener('click', () => {
 			this.events.emit(ApplicationEvents.CART_ORDER_SUBMITTED)
 		});
 
