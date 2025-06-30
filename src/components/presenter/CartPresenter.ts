@@ -1,5 +1,5 @@
 import { Presenter } from "../base/Presenter";
-import { ApplicationEvents, ICartModel, Product, ProductId, TCartProducts } from "../../types";
+import { ApplicationEvents, ICartModel, Product, ProductId, TCartData } from "../../types";
 import { CartView } from "../view/CartView";
 import { ApplicationApi } from "../ApplicationApi";
 import { IEvents } from "../base/events";
@@ -13,13 +13,13 @@ export class CartPresenter extends Presenter {
 	}
 
 	init(): void {
-		this.events.on<TCartProducts>(ApplicationEvents.CART_CONTENT_CHANGED, (data) => this.cartContentChangedCallback(data));
+		this.events.on(ApplicationEvents.CART_CONTENT_CHANGED, (data: TCartData) => this.cartContentChangedCallback(data));
 		this.events.on(ApplicationEvents.CART_ITEM_ADDED, (data: { id: ProductId }) => this.cartItemAddedCallback(data));
 		this.events.on(ApplicationEvents.CART_ITEM_DELETED, (data: { id: ProductId }) => this.cartItemDeletedCallback(data));
 		this.events.on(ApplicationEvents.CART_ORDER_SUBMITTED, () => this.cardOrderSubmittedCallback());
 	}
 
-	private cartContentChangedCallback(data: TCartProducts): void {
+	private cartContentChangedCallback(data: TCartData): void {
 		this.cartView.render(data);
 	}
 
@@ -37,7 +37,7 @@ export class CartPresenter extends Presenter {
 	}
 
 	private cardOrderSubmittedCallback() {
-		this.events.emit<TCartProducts>(ApplicationEvents.ORDER_CREATED, this.cartModel.getCartProducts());
+		this.events.emit(ApplicationEvents.ORDER_CREATED, this.cartModel.getCartData());
 	}
 
 	isProductInCart(id: ProductId): boolean {

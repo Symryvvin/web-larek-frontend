@@ -93,7 +93,7 @@ yarn build
 
 * `constructor(protected readonly api: ApplicationApi, protected readonly events: IEvents)` - конструктор принимающий
   экземпляр класса ApplicationApi и EventEmitter.
-* `init(): void` - метод инициализации компонентов presenter'а.
+* `init(): void` - метод инициализации presenter'а.
 
 ## Компоненты модели данных
 
@@ -162,7 +162,7 @@ yarn build
 `TCartProducts` - тип данных для представления корзины:
 
 * `items: Product[]` - список товаров в корзине.
-* `totalPrice: number` - полная стоимость товаров в корзине.
+* `price: number` - полная стоимость товаров в корзине.
 
 `CartView` - содержимое корзины, расширяет базовый компонент представления `Component<TCartProducts>`
 
@@ -216,16 +216,7 @@ yarn build
 
 `TFormValidationError = string | undefined` - тип ошибок валидации формы. Может быть строка или undefined.
 
-`IForm` - универсальный интерфейс для форм в котором должны быть обязательно реализованы метода в любой форме
-приложения:
-
-* `onSubmit: () => void` - поле хранящее функцию отправки формы и setter для данного элемента.
-* `errors: TFormValidationError[]` - массив ошибок валидации и setter для данного элемента.
-* `validate: () => void` - валидация формы.
-* `getFormData: () => object` - получить данные формы.
-* `render: (data?: object) => HTMLElement` - отрисовка представления формы.
-
-`Form<T>` - абстрактный класс формы, расширяющий `Component<T>` и реализующий интерфейс `IForm`. Методы `validate` и
+`Form<T>` - абстрактный класс формы, расширяющий `Component<T>`. Методы `validate` и
 `getFormData(): Partial<T>` все еще абстрактные:
 
 * `formValidationErrorsElement: HTMLSpanElement`- элемент блока с ошибками валидации.
@@ -306,10 +297,8 @@ id `'#order'`. Форма работает с текущим заказом:
 * `catalogContainer: PageView` - html контейнер каталога (галерея).
 * `cardPreview: CardPreview` - расширенное представление карточки товара (в отдельном окне).
   Методы класса:
-* `renderCardPreview(productId: ProductId, inCart: boolean): HTMLElement` - отрисовать расширенное представление
+* `renderCardPreview(productId: ProductId, inCart: boolean): void` - отрисовать расширенное представление
   карточки товара по переданному идентификатору товара и флагу, определяющему есть ли товар в корзине.
-* `currentCardPreviewId(): ProductId` - вернуть идентификатор товара, который в данный момент отображается в модальном
-  окне.
 
 ## Пользовательские сценарии
 

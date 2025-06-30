@@ -1,10 +1,10 @@
 import { Component } from "../base/Component";
-import { ApplicationEvents, Product, TCartProducts } from "../../types";
+import { ApplicationEvents, Product, TCartData } from "../../types";
 import { IEvents } from "../base/events";
 import { CardInCart } from "./Card";
 import { cloneTemplate, ensureElement } from "../../utils/utils";
 
-export class CartView extends Component<TCartProducts> {
+export class CartView extends Component<TCartData> {
 	protected _cards: HTMLElement[];
 	protected itemListElement: HTMLUListElement;
 	protected totalPriceElement: HTMLSpanElement;

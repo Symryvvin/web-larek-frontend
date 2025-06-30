@@ -27,7 +27,7 @@ export interface ICatalogModel {
 	getItemById: (id: string) => Product;
 }
 
-export type TCartProducts = {
+export type TCartData = {
 	items: Product[];
 	price: number;
 }
@@ -37,7 +37,7 @@ export interface ICartModel {
 	itemInCart: (id: ProductId) => boolean;
 	removeItemById: (id: ProductId) => void;
 	clear: () => void;
-	getCartProducts: () => TCartProducts;
+	getCartData: () => TCartData;
 }
 
 export type TOrderSuccessful = {

@@ -2,7 +2,7 @@ import { PagePresenter } from "./PagePresenter";
 import { Presenter } from "../base/Presenter";
 import { ApplicationApi } from "../ApplicationApi";
 import { IEvents } from "../base/events";
-import { ApplicationEvents, IModal, Order, ProductId, TCartProducts } from "../../types";
+import { ApplicationEvents, IModal, Order, ProductId } from "../../types";
 import { CartPresenter } from "./CartPresenter";
 import { OrderSuccessView } from "../view/OrderSuccessView";
 import { Form } from "../view/Form";
@@ -28,7 +28,6 @@ export class ApplicationPresenter extends Presenter {
 
 	init(): void {
 		this.events.on(ApplicationEvents.CATALOG_CARD_SELECTED, (data: { id: ProductId }) => this.catalogCardSelectedCallback(data));
-		this.events.on<TCartProducts>(ApplicationEvents.CART_CONTENT_CHANGED, (data) => this.cartContentChangedCallback(data));
 		this.events.on(ApplicationEvents.CART_OPENED, () => this.cartOpenedCallback());
 		this.events.on(ApplicationEvents.ORDER_CREATED, (data: { items: ProductId[], total: number }) => this.orderCreatedCallback(data));
 		this.events.on(ApplicationEvents.ORDER_PAYMENT_SELECTED, (order: Partial<Order>) => this.orderFormedCallback(order));
@@ -38,13 +37,6 @@ export class ApplicationPresenter extends Presenter {
 	private catalogCardSelectedCallback(data: { id: ProductId }): void {
 		const inCart = this.cartPresenter.isProductInCart(data.id);
 		this.openModal(this.mainPagePresenter.renderCardPreview(data.id, inCart));
-	}
-
-	private cartContentChangedCallback(data: TCartProducts): void {
-		const renderedCardPreviewId = this.mainPagePresenter.currentCardPreviewId();
-		const inCart = this.cartPresenter.isProductInCart(renderedCardPreviewId);
-
-		this.mainPagePresenter.renderCardPreview(renderedCardPreviewId, inCart);
 	}
 
 	private cartOpenedCallback() {
