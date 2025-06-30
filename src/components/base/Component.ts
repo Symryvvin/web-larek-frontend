@@ -6,11 +6,11 @@ export abstract class Component<T> {
 		element.textContent = String(value);
 	}
 
-	protected toggleClass(element: HTMLElement, className: string, force?: boolean) {
+	protected toggleClass(element: HTMLElement, className: string, force?: boolean): void {
 		element.classList.toggle(className, force);
 	}
 
-	protected setDisabled(element: HTMLElement, state: boolean) {
+	protected setDisabled(element: HTMLElement, state: boolean): void {
 		if (state) {
 			element.setAttribute('disabled', 'disabled');
 		} else {

@@ -88,6 +88,9 @@ yarn build
   основном контейнер (обертку) представления.
 * `render(data?: Partial<T>): HTMLElement` - метод отрисовки представления, позволяющий при наличии у компонента
   правильных setter`ов автоматически согласовать поля между объектом с частичными данными Partial<T> и html-элементами.
+* `setText(element: HTMLElement, value: string | number): void` - установить текст элементу. 
+* `toggleClass(element: HTMLElement, className: string, force?: boolean): void` - переключить класс элемента.
+* `setDisabled(element: HTMLElement, state: boolean): void` - включить или отключить элемент.
 
 `Presenter` - абстрактный класс presenter с набором базовых абстрактных методов и конструктора.
 
