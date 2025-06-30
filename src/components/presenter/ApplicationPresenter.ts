@@ -5,22 +5,30 @@ import { IEvents } from "../base/events";
 import { ApplicationEvents, IModal, Order, ProductId } from "../../types";
 import { CartPresenter } from "./CartPresenter";
 import { OrderSuccessView } from "../view/OrderSuccessView";
-import { Form } from "../view/Form";
+import { ContactsForm, Form, OrderForm } from "../view/Form";
+import { Modal } from "../view/Modal";
+import { HTMLTemplates } from "../HTMLTemplates";
+import { cloneTemplate } from "../../utils/utils";
 
 export class ApplicationPresenter extends Presenter {
+	protected readonly modal: IModal;
+	protected readonly orderForm: Form<Order>;
+	protected readonly contactsForm: Form<Order>;
+	protected readonly orderSuccessView: OrderSuccessView;
+
 	protected order: Order;
 
 	constructor(protected readonly api: ApplicationApi,
 	            protected readonly events: IEvents,
 	            protected readonly mainPagePresenter: PagePresenter,
-	            protected readonly cartPresenter: CartPresenter,
-	            protected readonly modal: IModal,
-	            protected readonly orderForm: Form<Order>,
-	            protected readonly contactsForm: Form<Order>,
-	            protected readonly orderSuccessView: OrderSuccessView
+	            protected readonly cartPresenter: CartPresenter
 	) {
 		super(api, events);
 
+		this.modal = new Modal(HTMLTemplates.modal, events);
+		this.orderForm = new OrderForm(cloneTemplate(HTMLTemplates.orderForm), events);
+		this.contactsForm = new ContactsForm(cloneTemplate(HTMLTemplates.contactsForm), events);
+		this.orderSuccessView = new OrderSuccessView(cloneTemplate(HTMLTemplates.orderSuccess));
 		this.orderSuccessView.onClose = () => {
 			this.modal.close();
 		};

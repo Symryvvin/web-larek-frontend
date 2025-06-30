@@ -11,7 +11,8 @@ export class Modal extends Component<ModalContent> implements IModal {
 	protected _content: HTMLElement;
 	protected closeButton: HTMLButtonElement;
 
-	constructor(container: HTMLElement, protected readonly events: IEvents) {
+	constructor(protected readonly container: HTMLElement,
+	            protected readonly events: IEvents) {
 		super(container);
 
 		this._content = ensureElement<HTMLElement>('.modal__content', this.container);

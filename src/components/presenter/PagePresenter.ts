@@ -4,14 +4,22 @@ import { Presenter } from "../base/Presenter";
 import { PageView } from "../view/PageView";
 import { ApplicationApi } from "../ApplicationApi";
 import { IEvents } from "../base/events";
+import { cloneTemplate } from "../../utils/utils";
+import { HTMLTemplates } from "../HTMLTemplates";
+import { CatalogModel } from "../model/CatalogModel";
 
 export class PagePresenter extends Presenter {
+	protected readonly catalogModel: ICatalogModel;
+	protected readonly pageView: PageView;
+	protected readonly cardPreview: CardPreview;
+
 	constructor(protected readonly api: ApplicationApi,
-	            protected readonly events: IEvents,
-	            protected readonly catalogModel: ICatalogModel,
-	            protected readonly mainPageView: PageView,
-	            protected readonly cardPreview: CardPreview) {
+	            protected readonly events: IEvents) {
 		super(api, events);
+
+		this.catalogModel = new CatalogModel(events);
+		this.pageView = new PageView(document.querySelector('.page') as HTMLElement, events);
+		this.cardPreview = new CardPreview(cloneTemplate(HTMLTemplates.cardPreview), events);
 	}
 
 	init(): void {
@@ -33,14 +41,14 @@ export class PagePresenter extends Presenter {
 	}
 
 	private catalogItemsLoadedCallback(data: Product[]): void {
-		this.mainPageView.render({items: data});
+		this.pageView.render({items: data});
 	}
 
 	private cartContentChangedCallback(data: TCartData): void {
 		const previewProductId = this.cardPreview.id;
 		this.renderCardPreview(previewProductId, this.isProductInCartData(previewProductId, data));
 
-		this.mainPageView.render({totalInCart: data.items.length});
+		this.pageView.render({totalInCart: data.items.length});
 	}
 
 	private isProductInCartData(id: ProductId, cartData: TCartData): boolean {
@@ -48,11 +56,11 @@ export class PagePresenter extends Presenter {
 	}
 
 	private modalOpenedCallback() {
-		this.mainPageView.lock = true;
+		this.pageView.lock = true;
 	}
 
 	private modalClosedCallback() {
-		this.mainPageView.lock = false;
+		this.pageView.lock = false;
 	}
 
 	renderCardPreview(productId: ProductId, inCart: boolean): HTMLElement {

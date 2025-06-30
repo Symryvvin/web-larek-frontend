@@ -8,7 +8,7 @@ export class OrderSuccessView extends Component<TOrderSuccessful> {
 
 	protected _onClose: () => void;
 
-	constructor(container: HTMLElement) {
+	constructor(protected readonly container: HTMLElement) {
 		super(container);
 
 		this.messageElement = ensureElement<HTMLParagraphElement>('.order-success__description', this.container);

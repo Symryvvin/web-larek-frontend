@@ -3,6 +3,7 @@ import { ApplicationEvents, Product } from "../../types";
 import { cloneTemplate, ensureElement } from "../../utils/utils";
 import { CatalogCard } from "./Card";
 import { IEvents } from "../base/events";
+import { HTMLTemplates } from "../HTMLTemplates";
 
 type TMainPage = {
 	items: Product[];
@@ -18,7 +19,6 @@ export class PageView extends Component<TMainPage> {
 	protected pageWrapperElement: HTMLElement;
 
 	constructor(protected readonly container: HTMLElement,
-	            protected readonly cardTemplate: HTMLTemplateElement,
 	            protected readonly events: IEvents) {
 		super(container);
 
@@ -34,7 +34,7 @@ export class PageView extends Component<TMainPage> {
 
 	set items(items: Product[]) {
 		this._cards = items.map(item => {
-			return new CatalogCard(cloneTemplate(this.cardTemplate), this.events).render(item);
+			return new CatalogCard(cloneTemplate(HTMLTemplates.cardInCatalog), this.events).render(item);
 		});
 
 		this.galleryElement.replaceChildren(...this._cards);

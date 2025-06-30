@@ -3,13 +3,20 @@ import { ApplicationEvents, ICartModel, Product, ProductId, TCartData } from "..
 import { CartView } from "../view/CartView";
 import { ApplicationApi } from "../ApplicationApi";
 import { IEvents } from "../base/events";
+import { CartModel } from "../model/CartModel";
+import { cloneTemplate } from "../../utils/utils";
+import { HTMLTemplates } from "../HTMLTemplates";
 
 export class CartPresenter extends Presenter {
+	protected readonly cartModel: ICartModel;
+	protected readonly cartView: CartView;
+
 	constructor(protected readonly api: ApplicationApi,
-	            protected readonly events: IEvents,
-	            protected readonly cartModel: ICartModel,
-	            protected readonly cartView: CartView) {
+	            protected readonly events: IEvents) {
 		super(api, events);
+
+		this.cartModel = new CartModel(events);
+		this.cartView = new CartView(cloneTemplate(HTMLTemplates.cart), HTMLTemplates.cardInCart, events);
 	}
 
 	init(): void {
@@ -37,7 +44,8 @@ export class CartPresenter extends Presenter {
 	}
 
 	private cardOrderSubmittedCallback() {
-		this.events.emit(ApplicationEvents.ORDER_CREATED, this.cartModel.getCartData());
+		const cartData = this.cartModel.getCartData();
+		this.events.emit(ApplicationEvents.ORDER_CREATED, {items: cartData.items.map(item => item.id), total: cartData.price});
 	}
 
 	isProductInCart(id: ProductId): boolean {
