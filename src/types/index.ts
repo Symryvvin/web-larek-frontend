@@ -27,18 +27,17 @@ export interface ICatalogModel {
 	getItemById: (id: string) => Product;
 }
 
+export type TCartProducts = {
+	items: Product[];
+	price: number;
+}
 export interface ICartModel {
 	items: Product[];
 	addItem: (item: Product) => void;
 	itemInCart: (id: ProductId) => boolean;
 	removeItemById: (id: ProductId) => void;
 	clear: () => void;
-	getTotalPrice: () => number;
-}
-
-export type TCartProducts = {
-	items: Product[];
-	totalPrice: number;
+	getCartProducts: () => TCartProducts;
 }
 
 export type TOrderSuccessful = {

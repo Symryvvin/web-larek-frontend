@@ -1,4 +1,4 @@
-import { ApplicationEvents, ICatalogModel, Product, ProductId } from "../../types";
+import { ApplicationEvents, ICatalogModel, Product, ProductId, TCartProducts } from "../../types";
 import { CardPreview } from "../view/Card";
 import { Presenter } from "../base/Presenter";
 import { PageView } from "../view/PageView";
@@ -18,7 +18,7 @@ export class PagePresenter extends Presenter {
 		this.loadItems();
 
 		this.events.on(ApplicationEvents.CATALOG_ITEMS_LOADED, (data: Product[]) => this.catalogItemsLoadedCallback(data));
-		this.events.on(ApplicationEvents.CART_CONTENT_CHANGED, (data: { total: number }) => this.cartContentChangedCallback(data));
+		this.events.on<TCartProducts>(ApplicationEvents.CART_CONTENT_CHANGED, (data) => this.cartContentChangedCallback(data));
 		this.events.on(ApplicationEvents.MODAL_OPENED, () => this.modalOpenedCallback());
 		this.events.on(ApplicationEvents.MODAL_CLOSED, () => this.modalClosedCallback());
 	}
@@ -36,8 +36,8 @@ export class PagePresenter extends Presenter {
 		this.mainPageView.render({items: data});
 	}
 
-	private cartContentChangedCallback(data: { total: number }): void {
-		this.mainPageView.render({totalInCart: data.total});
+	private cartContentChangedCallback(data: Partial<TCartProducts>): void {
+		this.mainPageView.render({totalInCart: data.items.length});
 	}
 
 	private modalOpenedCallback() {

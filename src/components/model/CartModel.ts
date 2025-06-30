@@ -1,4 +1,4 @@
-import { ApplicationEvents, ICartModel, Product, ProductId } from "../../types";
+import { ApplicationEvents, ICartModel, Product, ProductId, TCartProducts } from "../../types";
 import { IEvents } from "../base/events";
 
 export class CartModel implements ICartModel {
@@ -11,7 +11,14 @@ export class CartModel implements ICartModel {
 	addItem(item: Product): void {
 		if (!this.itemInCart(item.id)) {
 			this._items.push(item);
-			this.events.emit(ApplicationEvents.CART_CONTENT_CHANGED, {total: this.items.length});
+			this.events.emit<TCartProducts>(ApplicationEvents.CART_CONTENT_CHANGED, this.getCartProducts());
+		}
+	}
+
+	getCartProducts(): TCartProducts {
+		return {
+			items: this._items,
+			price: this._items.reduce((total, item) => total + item.price, 0)
 		}
 	}
 
@@ -22,16 +29,12 @@ export class CartModel implements ICartModel {
 
 	clear(): void {
 		this._items = [];
-		this.events.emit(ApplicationEvents.CART_CONTENT_CHANGED, {total: this.items.length});
+		this.events.emit<TCartProducts>(ApplicationEvents.CART_CONTENT_CHANGED, this.getCartProducts());
 	}
 
 	removeItemById(id: ProductId): void {
 		this._items = this._items.filter((item: Product) => item.id !== id);
-		this.events.emit(ApplicationEvents.CART_CONTENT_CHANGED, {total: this.items.length});
-	}
-
-	getTotalPrice(): number {
-		return this._items.reduce((total, item) => total + item.price, 0);
+		this.events.emit<TCartProducts>(ApplicationEvents.CART_CONTENT_CHANGED, this.getCartProducts());
 	}
 
 	get items(): Product[] {

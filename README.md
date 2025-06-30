@@ -140,7 +140,6 @@ yarn build
 * `addItem(item: Product): void` - добавить товар в корзину.
 * `removeItemById(id: ProductId): void` - удалить товар из корзины по идентификатору.
 * `clear(): void` - очистить корзину.
-* `getTotalPrice(): number` - получить полную стоимость товаров в корзине.
 
 ## Компоненты представления
 

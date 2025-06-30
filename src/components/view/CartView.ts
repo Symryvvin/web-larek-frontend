@@ -36,7 +36,7 @@ export class CartView extends Component<TCartProducts> {
 		this.setDisabled(this.cartButton, this._cards.length === 0);
 	}
 
-	set totalPrice(value: number) {
+	set price(value: number) {
 		this.setText(this.totalPriceElement, value);
 	}
 
