@@ -2,19 +2,21 @@ import { PagePresenter } from "./PagePresenter";
 import { Presenter } from "../base/Presenter";
 import { ApplicationApi } from "../ApplicationApi";
 import { IEvents } from "../base/events";
-import { ApplicationEvents, IModal, Order, ProductId } from "../../types";
+import { ApplicationEvents, IModal, Order, ProductId, TErrorMessage } from "../../types";
 import { CartPresenter } from "./CartPresenter";
 import { OrderSuccessView } from "../view/OrderSuccessView";
 import { ContactsForm, Form, OrderForm } from "../view/Form";
 import { Modal } from "../view/Modal";
 import { HTMLTemplates } from "../HTMLTemplates";
 import { cloneTemplate } from "../../utils/utils";
+import { ErrorMessageView } from "../view/ErrorMessageView";
 
 export class ApplicationPresenter extends Presenter {
 	protected readonly modal: IModal;
 	protected readonly orderForm: Form<Order>;
 	protected readonly contactsForm: Form<Order>;
 	protected readonly orderSuccessView: OrderSuccessView;
+	protected readonly errorMessageView: ErrorMessageView;
 
 	protected order: Order;
 
@@ -32,6 +34,10 @@ export class ApplicationPresenter extends Presenter {
 		this.orderSuccessView.onClose = () => {
 			this.modal.close();
 		};
+		this.errorMessageView = new ErrorMessageView(cloneTemplate(HTMLTemplates.error));
+		this.errorMessageView.onClose = () => {
+			this.modal.close();
+		};
 	}
 
 	init(): void {
@@ -40,6 +46,7 @@ export class ApplicationPresenter extends Presenter {
 		this.events.on(ApplicationEvents.ORDER_CREATED, (data: { items: ProductId[], total: number }) => this.orderCreatedCallback(data));
 		this.events.on(ApplicationEvents.ORDER_PAYMENT_SELECTED, (order: Partial<Order>) => this.orderFormedCallback(order));
 		this.events.on(ApplicationEvents.ORDER_PLACED, (order: Partial<Order>) => this.orderPlacedCallback(order));
+		this.events.on(ApplicationEvents.APP_FAILED, (data: TErrorMessage) => this.applicationErrorCallback(data));
 	}
 
 	private catalogCardSelectedCallback(data: { id: ProductId }): void {
@@ -69,8 +76,12 @@ export class ApplicationPresenter extends Presenter {
 			this.cartPresenter.clearCart();
 		})
 			.catch(error => {
-				console.log(error)
+				this.events.emit(ApplicationEvents.APP_FAILED, {error: error});
 			});
+	}
+
+	private applicationErrorCallback(data: TErrorMessage) {
+		this.openModal(this.errorMessageView.render(data));
 	}
 
 	private openModal(content: HTMLElement): void {

@@ -1,0 +1,14 @@
+@use "variables" as *;
+@use "mixins";
+
+.error-message {
+  @include mixins.flex(column);
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  gap: 1rem;
+
+  &__close {
+    margin-top: 2rem;
+  }
+}

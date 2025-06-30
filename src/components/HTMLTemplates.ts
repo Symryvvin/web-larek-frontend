@@ -7,4 +7,5 @@ export const HTMLTemplates = {
 	orderForm: document.querySelector('#order') as HTMLTemplateElement,
 	contactsForm: document.querySelector('#contacts') as HTMLTemplateElement,
 	orderSuccess: document.querySelector('#success') as HTMLTemplateElement,
+	error: document.querySelector('#error') as HTMLTemplateElement,
 }

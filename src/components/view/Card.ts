@@ -38,7 +38,6 @@ abstract class Card extends Component<Product> {
 abstract class GalleryCard extends Card {
 	protected categoryElement: HTMLSpanElement;
 	protected imageElement: HTMLImageElement;
-	protected priceElement: HTMLSpanElement;
 
 	protected constructor(protected readonly container: HTMLElement,
 	                      protected readonly events: IEvents) {

@@ -35,7 +35,7 @@ export class CartPresenter extends Presenter {
 			this.cartModel.addItem(product);
 		})
 			.catch(error => {
-				console.log(error)
+				this.events.emit(ApplicationEvents.APP_FAILED, {error: error});
 			});
 	}
 

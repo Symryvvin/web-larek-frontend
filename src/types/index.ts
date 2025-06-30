@@ -47,6 +47,10 @@ export type TOrderSuccessful = {
 
 export type TFormValidationError = string | undefined;
 
+export type TErrorMessage = {
+	error: string;
+};
+
 export interface IModal {
 	content: HTMLElement;
 	open: () => void;
@@ -69,5 +73,6 @@ export enum ApplicationEvents {
 	ORDER_PAYMENT_SELECTED = 'order:payment_selected',
 	ORDER_PLACED = 'order:placed',
 	MODAL_OPENED = 'modal:opened',
-	MODAL_CLOSED = 'modal:closed'
+	MODAL_CLOSED = 'modal:closed',
+	APP_FAILED = 'app:failed'
 }

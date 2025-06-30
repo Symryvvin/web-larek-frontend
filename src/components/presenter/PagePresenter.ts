@@ -36,7 +36,7 @@ export class PagePresenter extends Presenter {
 			this.catalogModel.items = data.items;
 		})
 			.catch(error => {
-				console.log(error)
+				this.events.emit(ApplicationEvents.APP_FAILED, {error: error});
 			});
 	}
 

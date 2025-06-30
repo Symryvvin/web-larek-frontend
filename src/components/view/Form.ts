@@ -109,7 +109,7 @@ export class OrderForm extends Form<Order> {
 		const paymentMethod = this.getPaymentMethod(this.paymentButtons);
 
 		if (paymentMethod === undefined) {
-			console.log('undefined payment method');
+			this.events.emit(ApplicationEvents.APP_FAILED, {error: 'payment method undefined'});
 		}
 
 		return {
