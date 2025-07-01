@@ -76,7 +76,8 @@ export class CatalogCard extends GalleryCard {
 
 enum CardPreviewButtonText {
 	ADD_TO_CARD = 'В корзину',
-	IN_CART = 'Убрать из корзины'
+	IN_CART = 'Убрать из корзины',
+	UNAVAILABLE = 'Нельзя купить'
 }
 
 export class CardPreview extends GalleryCard {
@@ -100,6 +101,16 @@ export class CardPreview extends GalleryCard {
 
 	private setButtonText() {
 		this.setText(this.cardButton, this._inCart ? CardPreviewButtonText.IN_CART : CardPreviewButtonText.ADD_TO_CARD);
+	}
+
+	set price(value: string) {
+		super.price = value;
+		if (value === null || value === undefined) {
+			this.setText(this.cardButton, CardPreviewButtonText.UNAVAILABLE);
+			this.setDisabled(this.cardButton, true);
+		} else {
+			this.setDisabled(this.cardButton, false);
+		}
 	}
 
 	set inCart(value: boolean) {
