@@ -12,7 +12,7 @@ export abstract class Form<T> extends Component<T> {
 
 		this.formValidationErrorsElement = ensureElement<HTMLSpanElement>('.form__errors', this.container);
 		this.submitButton = ensureElement<HTMLButtonElement>('button[type=\'submit\'', this.container);
-		this.submitButton.addEventListener('click', (event: Event) => {
+		this.container.addEventListener('submit', (event: Event) => {
 			event.preventDefault();
 		});
 	}
@@ -53,7 +53,7 @@ export class OrderForm extends Form<Order> {
 	            protected readonly events: IEvents) {
 		super(container);
 
-		this.submitButton.addEventListener('click', () => {
+		this.container.addEventListener('submit', () => {
 			this.events.emit(ApplicationEvents.ORDER_PAYMENT_SELECTED, this.getFormData())
 		});
 
@@ -143,7 +143,7 @@ export class ContactsForm extends Form<Order> {
 	            protected readonly events: IEvents) {
 		super(container);
 
-		this.submitButton.addEventListener('click', () => {
+		this.container.addEventListener('submit', () => {
 			this.events.emit(ApplicationEvents.ORDER_PLACED, this.getFormData())
 		});
 
