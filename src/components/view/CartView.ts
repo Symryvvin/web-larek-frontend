@@ -37,7 +37,7 @@ export class CartView extends Component<TCartData> {
 	}
 
 	set price(value: number) {
-		this.setText(this.totalPriceElement, value);
+		this.setText(this.totalPriceElement, `${value} синапсов`);
 	}
 
 }

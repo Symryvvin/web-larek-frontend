@@ -30,7 +30,7 @@ abstract class Card extends Component<Product> {
 	}
 
 	set price(value: string) {
-		this.setText(this.priceElement, value === null ? 'Бесплатно' : value);
+		this.setText(this.priceElement, value === null ? 'Бесценно' : `${value} синапсов`);
 	}
 
 }
