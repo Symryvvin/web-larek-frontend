@@ -75,10 +75,10 @@ export class OrderForm extends Form<Order> {
 
 	private switchPaymentMethod(button: HTMLButtonElement): void {
 		this.paymentButtons.forEach((button: HTMLButtonElement) => {
-			button.classList.remove('button_alt-active');
+			this.toggleClass(button, 'button_alt-active', false);
 		})
 
-		button.classList.add('button_alt-active');
+		this.toggleClass(button, 'button_alt-active', true);
 	}
 
 	validate(): void {

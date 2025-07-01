@@ -45,11 +45,7 @@ export class PageView extends Component<TMainPage> {
 	}
 
 	set lock(lock: boolean) {
-		if (lock) {
-			this.toggleClass(this.pageWrapperElement, 'page__wrapper_locked' ,true);
-		} else {
-			this.toggleClass(this.pageWrapperElement, 'page__wrapper_locked' ,false);
-		}
+		this.toggleClass(this.pageWrapperElement, 'page__wrapper_locked', lock);
 	}
 
 }
